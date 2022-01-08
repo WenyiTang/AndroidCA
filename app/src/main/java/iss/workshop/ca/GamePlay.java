@@ -168,7 +168,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         Chronometer simpleChronometer = findViewById(R.id.timerCount);
         simpleChronometer.stop();
         timeTaken = simpleChronometer.getContentDescription().toString();
-        Toast.makeText(this, timeTaken, Toast.LENGTH_SHORT).show();
 
         pauseBtn = findViewById(R.id.pauseBtn);
         pauseBtn.setVisibility(View.INVISIBLE);
