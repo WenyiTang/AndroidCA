@@ -9,6 +9,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button startBtn;
+    private Button seletcBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +18,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         startBtn = findViewById(R.id.playGame);
         startBtn.setOnClickListener(this);
+
+        seletcBtn = findViewById(R.id.selectImage);
+        seletcBtn.setOnClickListener(this);
+
     }
 
     @Override
@@ -25,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, GamePlay.class);
             startActivity(intent);
             finish();
+        }else if(view == seletcBtn){
+            Intent intent = new Intent(this, LoadingImageActivity.class);
+            startActivity(intent);
         }
     }
 }
