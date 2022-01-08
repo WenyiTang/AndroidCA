@@ -35,7 +35,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private Integer matches = 0;
     private Integer triesCount = 0;
     private String timeTaken;
-    private Button menuBtn, resumeBtn, playAgainBtn, mainMenuBtn, restartBtn;
+    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
 
     @Override
@@ -87,6 +87,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             mainMenuBtn.setOnClickListener(this);
         }
 
+        endMainMenuBtn = findViewById(R.id.endMainMenu);
+        if (endMainMenuBtn != null){
+            endMainMenuBtn.setOnClickListener(this);
+        }
+
         restartBtn = findViewById(R.id.restartBtn);
         if (restartBtn != null){
             restartBtn.setOnClickListener(this);
@@ -113,19 +118,21 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             pause();
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.VISIBLE);
+            ready = false;
         }
 
         if (view == resumeBtn){
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.INVISIBLE);
             resume();
+            ready = true;
         }
 
         if (view == playAgainBtn){
             restartGame();
         }
 
-        if (view == mainMenuBtn){
+        if (view == mainMenuBtn || view == endMainMenuBtn){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

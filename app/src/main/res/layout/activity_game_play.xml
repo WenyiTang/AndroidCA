@@ -119,27 +119,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/resumeBtn"
-            tools:ignore="DuplicateIds" />
+            app:layout_constraintTop_toBottomOf="@id/resumeBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/endGame"
-        android:layout_width="300dp"
-        android:layout_height="600dp"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
         android:background="#03A9F4"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timer"
         >
 
         <TextView
             android:id="@+id/congrats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="TEST"
             android:gravity="center"
             android:padding="40dp"
             android:textSize="20sp"
@@ -150,24 +147,23 @@
 
         <Button
             android:id="@+id/playAgain"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Play Again"
-            app:layout_constraintBottom_toTopOf="@id/toMainMenu"
+            app:layout_constraintBottom_toTopOf="@id/endMainMenu"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/congrats" />
 
         <Button
-            android:id="@+id/toMainMenu"
-            android:layout_width="wrap_content"
+            android:id="@+id/endMainMenu"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Main Menu"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playAgain"
-            tools:ignore="DuplicateIds" />
+            app:layout_constraintTop_toBottomOf="@id/playAgain" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
