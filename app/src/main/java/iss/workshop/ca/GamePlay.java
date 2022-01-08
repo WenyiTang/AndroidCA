@@ -3,9 +3,13 @@ package iss.workshop.ca;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -31,8 +35,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private Integer matches = 0;
     private Integer triesCount = 0;
     private String timeTaken;
-    private Button pauseBtn, resumeBtn, playAgainBtn, mainMenuBtn;
+    private Button menuBtn, resumeBtn, playAgainBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +67,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             }
         }).start();
 
-        pauseBtn = findViewById(R.id.pauseBtn);
-        if (pauseBtn != null){
-            pauseBtn.setOnClickListener(this);
+        menuBtn = findViewById(R.id.menuBtn);
+        if (menuBtn != null){
+            menuBtn.setOnClickListener(this);
         }
 
         resumeBtn = findViewById(R.id.resumeBtn);
@@ -80,6 +85,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         mainMenuBtn = findViewById(R.id.toMainMenu);
         if (mainMenuBtn != null){
             mainMenuBtn.setOnClickListener(this);
+        }
+
+        restartBtn = findViewById(R.id.restartBtn);
+        if (restartBtn != null){
+            restartBtn.setOnClickListener(this);
         }
 
         TextView matchesCount = findViewById(R.id.matchesCount);
@@ -99,7 +109,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public void onClick(View view) {
-        if (view == pauseBtn){
+        if (view == menuBtn){
             pause();
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.VISIBLE);
@@ -112,9 +122,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }
 
         if (view == playAgainBtn){
-            startActivity(getIntent());
-            finish();
-            overridePendingTransition(0, 0);
+            restartGame();
         }
 
         if (view == mainMenuBtn){
@@ -122,6 +130,16 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             startActivity(intent);
             finish();
         }
+
+        if (view == restartBtn){
+            restartGame();
+        }
+    }
+
+    public void restartGame(){
+        startActivity(getIntent());
+        finish();
+        overridePendingTransition(0, 0);
     }
 
     public void start(){
@@ -169,8 +187,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         simpleChronometer.stop();
         timeTaken = simpleChronometer.getContentDescription().toString();
 
-        pauseBtn = findViewById(R.id.pauseBtn);
-        pauseBtn.setVisibility(View.INVISIBLE);
+        menuBtn = findViewById(R.id.menuBtn);
+        menuBtn.setVisibility(View.INVISIBLE);
 
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);

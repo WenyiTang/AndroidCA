@@ -34,8 +34,6 @@ public class CardAdapter extends ArrayAdapter<Object> {
         imageView.setImageResource(id);
         imageView.setVisibility(View.INVISIBLE);
 
-
-
         return view;
     }
 }
