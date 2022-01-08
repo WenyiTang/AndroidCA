@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CA">
         <activity
+            android:name=".Guide"
+            android:exported="false" />
+        <activity
             android:name=".GamePlay"
             android:exported="false" />
         <activity

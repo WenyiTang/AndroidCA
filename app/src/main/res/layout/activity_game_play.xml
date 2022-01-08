@@ -12,7 +12,7 @@
         android:id="@+id/tries"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tries: "
+        android:text="Tries: 0"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/timer"
         app:layout_constraintLeft_toLeftOf="parent"

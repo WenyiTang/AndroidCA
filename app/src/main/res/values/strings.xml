@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CA</string>
+    <string name="guide">"Hi! Welcome to our Memory Game!\n\nHere are the rules.Upon clicking on \"Start Game\", a search bar will be shown. Input a URL and search for images.From the URL, 20 images will be downloaded.\n\nAfter all images have been downloaded, select 6 images to be your playing cards, and press \"Play\" to start game play.Before pressing play, you can still change the URL to search for a new set of images. \n\nUpon pressing play, a playing grid will be shown with all cards facing down.Click on a card to flip it over. Click on another to find a match.If it is a match, the card stays facing up, otherwise, the card flips back.\n\nThe timer starts immediately once the playing grid loads, and ends when all pairs of cards are found."
+    </string>
 </resources>
