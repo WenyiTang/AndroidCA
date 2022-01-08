@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -13,7 +14,6 @@ import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,9 +30,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private boolean ready = false;
     private Integer matches = 0;
     private Integer triesCount = 0;
-    private String timeTaken;
-    private Button pauseBtn, resumeBtn, playAgainBtn, mainMenuBtn;
+
+    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
+    private Chronometer simpleChronometer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +64,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             }
         }).start();
 
-        pauseBtn = findViewById(R.id.pauseBtn);
-        if (pauseBtn != null){
-            pauseBtn.setOnClickListener(this);
+        menuBtn = findViewById(R.id.menuBtn);
+        if (menuBtn != null){
+            menuBtn.setOnClickListener(this);
         }
 
         resumeBtn = findViewById(R.id.resumeBtn);
@@ -82,11 +84,25 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             mainMenuBtn.setOnClickListener(this);
         }
 
+        endMainMenuBtn = findViewById(R.id.endMainMenu);
+        if (endMainMenuBtn != null){
+            endMainMenuBtn.setOnClickListener(this);
+        }
+
+        restartBtn = findViewById(R.id.restartBtn);
+        if (restartBtn != null){
+            restartBtn.setOnClickListener(this);
+        }
+
+        simpleChronometer = findViewById(R.id.timerCount);
+
         TextView matchesCount = findViewById(R.id.matchesCount);
-        matchesCount.setText(matches + " of " + img.length + " matches");
+        String matchStr = getString(R.string.matches_count, matches, img.length);
+        matchesCount.setText(matchStr);
+        //matchesCount.setText(matches + " of " + img.length + " matches");
     }
 
-    private String[] populateImgs(String[] img, String[] imgs){
+    private void populateImgs(String[] img, String[] imgs){
         List<String> shuffledList = new ArrayList<>();
         for (String s : img){
             shuffledList.add(s);
@@ -94,49 +110,55 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }
         Collections.shuffle(shuffledList);
         shuffledList.toArray(imgs);
-        return imgs;
     }
 
     @Override
     public void onClick(View view) {
-        if (view == pauseBtn){
+        if (view == menuBtn){
             pause();
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.VISIBLE);
+            ready = false;
         }
 
         if (view == resumeBtn){
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.INVISIBLE);
             resume();
+            ready = true;
         }
 
         if (view == playAgainBtn){
-            startActivity(getIntent());
-            finish();
-            overridePendingTransition(0, 0);
+            restartGame();
         }
 
-        if (view == mainMenuBtn){
+        if (view == mainMenuBtn || view == endMainMenuBtn){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }
+
+        if (view == restartBtn){
+            restartGame();
+        }
+    }
+
+    public void restartGame(){
+        startActivity(getIntent());
+        finish();
+        overridePendingTransition(0, 0);
     }
 
     public void start(){
-        Chronometer simpleChronometer = findViewById(R.id.timerCount);
         simpleChronometer.start();
     }
 
     public void pause(){
-        Chronometer simpleChronometer = findViewById(R.id.timerCount);
         pauseTime = simpleChronometer.getBase() - SystemClock.elapsedRealtime();
         simpleChronometer.stop();
     }
 
     public void resume(){
-        Chronometer simpleChronometer = findViewById(R.id.timerCount);
         simpleChronometer.setBase(SystemClock.elapsedRealtime() + pauseTime);
         simpleChronometer.start();
     }
@@ -167,15 +189,15 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     protected void endGame(){
         Chronometer simpleChronometer = findViewById(R.id.timerCount);
         simpleChronometer.stop();
-        timeTaken = simpleChronometer.getContentDescription().toString();
+        String timeTaken = simpleChronometer.getContentDescription().toString();
 
-        pauseBtn = findViewById(R.id.pauseBtn);
-        pauseBtn.setVisibility(View.INVISIBLE);
+        menuBtn = findViewById(R.id.menuBtn);
+        menuBtn.setVisibility(View.INVISIBLE);
 
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);
-        congrats.setText("CONGRATULATIONS!\n\n You found \n" + img.length + " matches \nin "
-                + timeTaken + " \nwith " + triesCount + " tries.");
+        String congratsStr = getString(R.string.congrats, img.length, timeTaken, triesCount);
+        congrats.setText(congratsStr);
         endPopup.setVisibility(View.VISIBLE);
     }
 
@@ -191,7 +213,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         cardflipped[1] = imgs[i];
         TextView tries = findViewById(R.id.tries);
         triesCount++;
-        tries.setText("Tries: " + triesCount);
+        String triesStr = getString(R.string.tries_count, triesCount);
+        tries.setText(triesStr);
     }
 
     protected void checkMatch(ImageView imageView){
@@ -199,11 +222,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             matches++;
 
             TextView matchesCount = findViewById(R.id.matchesCount);
-            matchesCount.setText(matches + " of " + img.length + " matches");
+            String matchStr = getString(R.string.matches_count, matches, img.length);
+            matchesCount.setText(matchStr);
 
             if (matches == img.length) {
                 endGame();
-                return;
             }
         }
         else{
@@ -213,13 +236,10 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
     protected void turnCardBack(ImageView imageView){
         ready = false;
-        imageView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imgflipped[0].setVisibility(View.INVISIBLE);
-                imgflipped[1].setVisibility(View.INVISIBLE);
-                ready = true;
-            }
+        imageView.postDelayed(() -> {
+            imgflipped[0].setVisibility(View.INVISIBLE);
+            imgflipped[1].setVisibility(View.INVISIBLE);
+            ready = true;
         }, 500);
     }
 
