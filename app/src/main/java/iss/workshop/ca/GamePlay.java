@@ -30,7 +30,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private boolean ready = false;
     private Integer matches = 0;
     private Integer triesCount = 0;
-
+    private TextView matchesCount;
+    private TextView tries;
     private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn, startBtn;
     private long pauseTime;
     private Chronometer simpleChronometer;
@@ -39,6 +40,26 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_play);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        menuBtn = findViewById(R.id.menuBtn);
+                        resumeBtn = findViewById(R.id.resumeBtn);
+                        playAgainBtn = findViewById(R.id.playAgain);
+                        mainMenuBtn = findViewById(R.id.toMainMenu);
+                        endMainMenuBtn = findViewById(R.id.endMainMenu);
+                        restartBtn = findViewById(R.id.restartBtn);
+                        simpleChronometer = findViewById(R.id.timerCount);
+                        matchesCount = findViewById(R.id.matchesCount);
+                        tries = findViewById(R.id.tries);
+                    }
+                });
+            }
+        }).start();
 
         new Thread(new Runnable() {
             @Override
@@ -56,48 +77,38 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                             ready = true;
                             start();
                         }
+
+                        initElements();
                     }
                 });
             }
         }).start();
+    }
 
-        menuBtn = findViewById(R.id.menuBtn);
+    private void initElements() {
         if (menuBtn != null){
             menuBtn.setOnClickListener(this);
         }
-
-        resumeBtn = findViewById(R.id.resumeBtn);
         if (resumeBtn != null){
             resumeBtn.setOnClickListener(this);
         }
-
-        playAgainBtn = findViewById(R.id.playAgain);
         if (playAgainBtn != null){
             playAgainBtn.setOnClickListener(this);
         }
-
-        mainMenuBtn = findViewById(R.id.toMainMenu);
         if (mainMenuBtn != null){
             mainMenuBtn.setOnClickListener(this);
         }
-
-        endMainMenuBtn = findViewById(R.id.endMainMenu);
         if (endMainMenuBtn != null){
             endMainMenuBtn.setOnClickListener(this);
         }
-
-        restartBtn = findViewById(R.id.restartBtn);
         if (restartBtn != null){
             restartBtn.setOnClickListener(this);
         }
-
         simpleChronometer = findViewById(R.id.timerCount);
 
-        TextView matchesCount = findViewById(R.id.matchesCount);
         String matchStr = getString(R.string.matches_count, matches, img.length);
         matchesCount.setText(matchStr);
 
-        TextView tries = findViewById(R.id.tries);
         String triesStr = getString(R.string.tries_count, triesCount);
         tries.setText(triesStr);
     }
