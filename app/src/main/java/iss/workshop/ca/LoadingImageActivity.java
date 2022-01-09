@@ -140,7 +140,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                 startActivity(intentDetail);
             }
         });
-
     }
 
 

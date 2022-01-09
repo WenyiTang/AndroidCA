@@ -38,13 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == startBtn){
             Intent intent = new Intent(this, LoadingImageActivity.class);
             startActivity(intent);
-            finish();
-        }else if(view == guideBtn){
-            Intent intent = new Intent(this, Guide.class);
-            startActivity(intent);
+            //finish();
         }
-
-        if (view == guideBtn){
+        else if(view == guideBtn){
             Intent intent = new Intent(this, Guide.class);
             startActivity(intent);
         }
