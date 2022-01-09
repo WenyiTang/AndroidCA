@@ -148,11 +148,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }
 
         if (view == mainMenuBtn || view == endMainMenuBtn){
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
 
-            //Since GamePlay Activity came from MainActivity(without finish()),
-            // just need finish() to go back to MainActivity.
             finish();
         }
 
