@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 
@@ -199,6 +200,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, img.length, timeTaken, triesCount);
+        playSound(R.raw.finishaudio);
         congrats.setText(congratsStr);
         endPopup.setVisibility(View.VISIBLE);
     }
@@ -226,12 +228,13 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             TextView matchesCount = findViewById(R.id.matchesCount);
             String matchStr = getString(R.string.matches_count, matches, img.length);
             matchesCount.setText(matchStr);
-
+            playSound(R.raw.success_sound);
             if (matches == img.length) {
                 endGame();
             }
         }
         else{
+            playSound(R.raw.wrong_select);
             turnCardBack(imageView);
         }
     }
@@ -245,5 +248,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }, 500);
     }
 
+    public void playSound(int soundId) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), soundId);
+        mediaPlayer.start();
+    }
 
 }
