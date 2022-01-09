@@ -9,6 +9,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button startBtn, guideBtn;
+    public static boolean continueMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         guideBtn = findViewById(R.id.guideBtn);
         guideBtn.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MusicManager.release();
     }
 
     @Override

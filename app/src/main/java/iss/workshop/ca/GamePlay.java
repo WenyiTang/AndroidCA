@@ -36,6 +36,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private long pauseTime;
     private Chronometer simpleChronometer;
 
+    public static boolean continueMusic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +123,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.VISIBLE);
             ready = false;
+            MusicManager.pause();
         }
 
         if (view == resumeBtn){
@@ -128,6 +131,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             menu.setVisibility(View.INVISIBLE);
             resume();
             ready = true;
+            MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
         }
 
         if (view == playAgainBtn){
@@ -251,6 +255,21 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     public void playSound(int soundId) {
         MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), soundId);
         mediaPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 
 }
