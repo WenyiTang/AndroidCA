@@ -35,11 +35,18 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
     private Chronometer simpleChronometer;
+    private ConstraintLayout menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_play);
+
+        //initialize primary elements on main thread
+        menuBtn = findViewById(R.id.menuBtn);
+        simpleChronometer = findViewById(R.id.timerCount);
+        matchesCount = findViewById(R.id.matchesCount);
+        tries = findViewById(R.id.tries);
 
         new Thread(new Runnable() {
             @Override
@@ -47,15 +54,14 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        menuBtn = findViewById(R.id.menuBtn);
                         resumeBtn = findViewById(R.id.resumeBtn);
                         playAgainBtn = findViewById(R.id.playAgain);
                         mainMenuBtn = findViewById(R.id.toMainMenu);
                         endMainMenuBtn = findViewById(R.id.endMainMenu);
                         restartBtn = findViewById(R.id.restartBtn);
-                        simpleChronometer = findViewById(R.id.timerCount);
-                        matchesCount = findViewById(R.id.matchesCount);
-                        tries = findViewById(R.id.tries);
+                        menu = findViewById(R.id.menuPopup);
+
+                        initElements();
                     }
                 });
             }
@@ -77,12 +83,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                             ready = true;
                             start();
                         }
-
-                        initElements();
                     }
                 });
             }
         }).start();
+
     }
 
     private void initElements() {
@@ -128,13 +133,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     public void onClick(View view) {
         if (view == menuBtn){
             pause();
-            ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.VISIBLE);
             ready = false;
         }
 
         if (view == resumeBtn){
-            ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.INVISIBLE);
             resume();
             ready = true;
@@ -203,13 +206,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     protected void endGame(){
-        Chronometer simpleChronometer = findViewById(R.id.timerCount);
         simpleChronometer.stop();
         String timeTaken = simpleChronometer.getContentDescription().toString();
-
-        menuBtn = findViewById(R.id.menuBtn);
         menuBtn.setVisibility(View.INVISIBLE);
-
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, img.length, timeTaken, triesCount);
@@ -227,7 +226,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         imgflipped[1] = imageView;
         imgflipped[1].setVisibility(View.VISIBLE);
         cardflipped[1] = imgs[i];
-        TextView tries = findViewById(R.id.tries);
         triesCount++;
         String triesStr = getString(R.string.tries_count, triesCount);
         tries.setText(triesStr);
@@ -237,7 +235,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         if (cardflipped[0].equals(cardflipped[1])){
             matches++;
 
-            TextView matchesCount = findViewById(R.id.matchesCount);
             String matchStr = getString(R.string.matches_count, matches, img.length);
             matchesCount.setText(matchStr);
 
