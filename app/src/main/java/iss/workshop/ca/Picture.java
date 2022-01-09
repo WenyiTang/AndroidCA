@@ -9,7 +9,16 @@ public class Picture implements Serializable {
     private Bitmap bitmap;
     private String id;
     private File file;
-
+    private int selectCount;
+    private int position;
+  
+    public Picture() {
+    }
+    
+    public Picture(String path) {
+        this.path = path;
+    }
+    
     public Picture (File file) {
         this.file = file;
     }
@@ -23,6 +32,25 @@ public class Picture implements Serializable {
         this.id = id;
     }
 
+    public String getPath() {
+        return path;
+    }
+    
+    public int getSelectCount() {
+        return selectCount;
+    }
+    
+    public void setSelectCount(int selectCount) {
+    this.selectCount = selectCount;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public Bitmap getBitmap() {
         return bitmap;
@@ -43,5 +71,4 @@ public class Picture implements Serializable {
     }
 
     public void setFile(File file) {this.file = file;}
-
 }

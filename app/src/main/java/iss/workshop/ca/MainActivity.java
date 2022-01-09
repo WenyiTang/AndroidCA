@@ -17,43 +17,30 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    int noOfPairs = 6;
-    private Button startBtn, guideBtn;
-
-    private final String[] links = {"https://cdn.stocksnap.io/img-thumbs/960w/mountains-lake_LWLQMM5WID.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/sunflower-field_6K5XD147YC.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/wheelchair-hospital_YIA3IQHMCR.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/top-workspace_ILQA1VXXOJ.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/antique-watch_9NSZOOQGTD.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/goose-animal_YPWZ567BJP.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/candy-canes_UPC02BPCIO.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/nature-animal_RSGQ4K2PX5.jpg",
-            "https://cdn.stocksnap.io/img-thumbs/960w/mountain-desert_OSDDRVNIFI.jpg"};
-
-    private ArrayList<Picture> pictures  = new ArrayList<>();
+    private Button startBtn;
+    private Button guideBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        for (int i = 0; i < noOfPairs; i++) {
-            startDownloadPicture(links[i]);
-        };
-
-        startBtn = findViewById(R.id.playGame);
+        startBtn = findViewById(R.id.selectImage);
         startBtn.setOnClickListener(this);
-
 
         guideBtn = findViewById(R.id.guideBtn);
         guideBtn.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View view) {
         if (view == startBtn){
-            Intent intent = new Intent(this, GamePlay.class);
-            intent.putExtra("pictures", (Serializable) pictures);
+            Intent intent = new Intent(this, LoadingImageActivity.class);
+            startActivity(intent);
+            finish();
+        }else if(view == guideBtn){
+            Intent intent = new Intent(this, Guide.class);
             startActivity(intent);
         }
 
