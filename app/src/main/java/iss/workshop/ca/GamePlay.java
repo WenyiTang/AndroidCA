@@ -32,7 +32,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private Integer triesCount = 0;
     private TextView matchesCount;
     private TextView tries;
-    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn, startBtn;
+    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
     private Chronometer simpleChronometer;
 
@@ -145,8 +145,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }
 
         if (view == mainMenuBtn || view == endMainMenuBtn){
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
+
+            //Since GamePlay Activity came from MainActivity(without finish()),
+            // just need finish() to go back to MainActivity.
             finish();
         }
 
@@ -255,6 +258,4 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             ready = true;
         }, 500);
     }
-
-
 }
