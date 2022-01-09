@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
 
@@ -20,11 +22,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class GamePlay extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener{
-    private String[] img = {
-            "afraid", "full", "hug", "laugh", "peep", "snore"
-    };
+//    private String[] img = {
+//            "afraid", "full", "hug", "laugh", "peep", "snore"
+//    };
 
-    private String[] imgs = new String[img.length * 2];
+    private ArrayList<Picture> pictures = new ArrayList<>();
+
+//    private String[] imgs = new String[img.length * 2];
+//    private String[] pics = new String[pictures.size() * 2];
+//    private ArrayList<String> pics;
     private String[] cardflipped = new String[2];
     private ImageView[] imgflipped = new ImageView[2];
     private boolean ready = false;
@@ -40,14 +46,26 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_play);
 
+        // Get data from MainActivity
+        Intent intent = getIntent();
+        pictures = (ArrayList<Picture>) intent.getSerializableExtra("pictures");
+
+        generateBitmap(pictures);
+
+        ArrayList<Picture> duplicatePics = duplicateAndShuffle(pictures);
+
+//        for (Picture pic : pictures) {
+//            picId.add(pic.getId());
+//        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                populateImgs(img, imgs);
+                //pics = populateImgs(picId);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        CardAdapter adapter = new CardAdapter(GamePlay.this, imgs);
+                        CardAdapter adapter = new CardAdapter(GamePlay.this, duplicatePics);
 
                         GridView gridView = findViewById(R.id.gridView);
                         if (gridView != null) {
@@ -94,7 +112,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         simpleChronometer = findViewById(R.id.timerCount);
 
         TextView matchesCount = findViewById(R.id.matchesCount);
-        String matchStr = getString(R.string.matches_count, matches, img.length);
+//        String matchStr = getString(R.string.matches_count, matches, img.length);
+        String matchStr = getString(R.string.matches_count, matches, pictures.size());
         matchesCount.setText(matchStr);
 
         TextView tries = findViewById(R.id.tries);
@@ -102,14 +121,34 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         tries.setText(triesStr);
     }
 
-    private void populateImgs(String[] img, String[] imgs){
-        List<String> shuffledList = new ArrayList<>();
-        for (String s : img){
+//    private void populateImgs(String[] img, String[] imgs){
+//        List<String> shuffledList = new ArrayList<>();
+//        for (String s : img){
+//            shuffledList.add(s);
+//            shuffledList.add(s);
+//        }
+//        Collections.shuffle(shuffledList);
+//        shuffledList.toArray(imgs);
+//    }
+
+//    private void populateImgs(ArrayList<String> picId, String[] pics){
+//        List<String> shuffledList = new ArrayList<>();
+//        for (String s : picId){
+//            shuffledList.add(s);
+//            shuffledList.add(s);
+//        }
+//        Collections.shuffle(shuffledList);
+//        shuffledList.toArray(pics);
+//    }
+
+    private ArrayList<String> populateImgs(ArrayList<String> picId){
+        ArrayList<String> shuffledList = new ArrayList<>();
+        for (String s : picId){
             shuffledList.add(s);
             shuffledList.add(s);
         }
         Collections.shuffle(shuffledList);
-        shuffledList.toArray(imgs);
+        return shuffledList;
     }
 
 
@@ -198,7 +237,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);
-        String congratsStr = getString(R.string.congrats, img.length, timeTaken, triesCount);
+        String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
         endPopup.setVisibility(View.VISIBLE);
     }
@@ -206,13 +245,17 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     protected void move1(ImageView imageView, int i){
         imgflipped[0] = imageView;
         imgflipped[0].setVisibility(View.VISIBLE);
-        cardflipped[0] = imgs[i];
+//        cardflipped[0] = pics.get(i);
+        Picture pic = (Picture) imgflipped[0].getTag();
+        cardflipped[0] = pic.getId();
     }
 
     protected void move2(ImageView imageView, int i){
         imgflipped[1] = imageView;
         imgflipped[1].setVisibility(View.VISIBLE);
-        cardflipped[1] = imgs[i];
+//        cardflipped[1] = pics.get(i);
+        Picture pic = (Picture) imgflipped[1].getTag();
+        cardflipped[1] = pic.getId();
         TextView tries = findViewById(R.id.tries);
         triesCount++;
         String triesStr = getString(R.string.tries_count, triesCount);
@@ -224,10 +267,10 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             matches++;
 
             TextView matchesCount = findViewById(R.id.matchesCount);
-            String matchStr = getString(R.string.matches_count, matches, img.length);
+            String matchStr = getString(R.string.matches_count, matches, pictures.size());
             matchesCount.setText(matchStr);
 
-            if (matches == img.length) {
+            if (matches == pictures.size()) {
                 endGame();
             }
         }
@@ -243,6 +286,27 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             imgflipped[1].setVisibility(View.INVISIBLE);
             ready = true;
         }, 500);
+    }
+
+    private void generateBitmap(ArrayList<Picture> pictures) {
+        for (Picture pic : pictures) {
+            Bitmap bitmap = BitmapFactory.decodeFile(pic.getFile().getAbsolutePath());
+            pic.setBitmap(bitmap);
+        }
+    }
+
+    private ArrayList<Picture> duplicateAndShuffle(ArrayList<Picture> pics) {
+        ArrayList<Picture> newPictures = new ArrayList<>();
+
+        for (Integer i = 0; i < pics.size(); i++) {
+            Bitmap bitmap = pics.get(i).getBitmap();
+            String id = i.toString();
+            newPictures.add(new Picture(bitmap, id));
+            newPictures.add(new Picture(bitmap, id));
+        }
+
+        Collections.shuffle(newPictures);
+        return newPictures;
     }
 
 
