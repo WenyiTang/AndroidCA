@@ -57,8 +57,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MusicManager.release();
+    }
 
     @Override
     public void onClick(View view) {

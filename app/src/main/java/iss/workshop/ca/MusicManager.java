@@ -85,7 +85,7 @@ public class MusicManager {
         Log.d(TAG, "Current music is now ["+ currentMusic+"]");
     }
 
-    private static void release(){
+    public static void release(){
         Log.d(TAG, "Releasing media players");
         Collection<MediaPlayer> mps = players.values();
         for (MediaPlayer mp:mps){
