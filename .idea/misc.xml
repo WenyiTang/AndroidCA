@@ -12,8 +12,9 @@
         <entry key="..\:/Users/danie/AndroidStudioProjects/Android_CA_pinze/app/src/main/res/layout/activity_loading_image.xml" value="0.10520833333333333" />
         <entry key="app/src/main/res/drawable-v24/my_et.xml" value="0.1140625" />
         <entry key="app/src/main/res/drawable/background_button_send.xml" value="0.1574074074074074" />
+        <entry key="app/src/main/res/layout/activity_guide.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_loading_image.xml" value="0.14166666666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.125" />
         <entry key="app/src/main/res/layout/item_gallery_picture.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_imge_selected.xml" value="0.1" />
       </map>
