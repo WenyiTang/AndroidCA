@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button startBtn, guideBtn;
+    private Button startBtn, guideBtn, settingBtn;
     public static boolean continueMusic;
 
     @Override
@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         guideBtn = findViewById(R.id.guideBtn);
         guideBtn.setOnClickListener(this);
+
+        settingBtn = findViewById(R.id.settingBtn);
+        settingBtn.setOnClickListener(this);
     }
 
     @Override
@@ -53,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (view == guideBtn){
             Intent intent = new Intent(this, Guide.class);
+            startActivity(intent);
+        }
+
+        if (view == settingBtn){
+            Intent intent = new Intent(this, Setting.class);
             startActivity(intent);
         }
     }

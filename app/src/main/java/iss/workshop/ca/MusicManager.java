@@ -2,6 +2,7 @@ package iss.workshop.ca;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.Collection;
@@ -16,6 +17,10 @@ public class MusicManager {
     private static HashMap<Integer, MediaPlayer> players = new HashMap<Integer, MediaPlayer>();
     private static int currentMusic = -1;
     private static int previousMusic =-1;
+
+    public static float getMusicVolume(Context context){
+        return 1.0f;
+    }
 
     public static void start(Context context, int music){
         start(context, music, false);
