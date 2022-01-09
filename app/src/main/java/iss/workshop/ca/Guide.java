@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import android.view.KeyEvent;
+
 public class Guide extends AppCompatActivity {
 
     @Override

@@ -3,11 +3,20 @@ package iss.workshop.ca;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
     private Button startBtn;
     private Button guideBtn;
 
@@ -34,5 +43,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, Guide.class);
             startActivity(intent);
         }
+
+        if (view == guideBtn){
+            Intent intent = new Intent(this, Guide.class);
+            startActivity(intent);
+        }
+    }
+
+    protected void startDownloadPicture(String imgURL) {
+        String destFilename = UUID.randomUUID().toString() + imgURL.lastIndexOf(".") + 1;
+        File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File destFile = new File(dir, destFilename);
+        pictures.add(new Picture(destFile));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PictureDownloader imgDL = new PictureDownloader();
+                imgDL.downloadPicture(imgURL, destFile);
+            }
+        }).start();
     }
 }

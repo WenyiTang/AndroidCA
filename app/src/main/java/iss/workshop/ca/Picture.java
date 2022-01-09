@@ -2,41 +2,46 @@ package iss.workshop.ca;
 
 import android.graphics.Bitmap;
 
-//public class Picture implements Parcelable
-public class Picture{
+import java.io.File;
+import java.io.Serializable;
 
-    private String path;
+public class Picture implements Serializable {
     private Bitmap bitmap;
+    private String id;
+    private File file;
     private int selectCount;
     private int position;
-
+  
     public Picture() {
     }
-
+    
     public Picture(String path) {
         this.path = path;
     }
-    public Picture(Bitmap bitmap) {this.bitmap = bitmap;}
+    
+    public Picture (File file) {
+        this.file = file;
+    }
 
-    public Bitmap getBitmap() {return bitmap;}
+    public Picture (Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 
-    public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
-
+    public Picture (Bitmap bitmap, String id) {
+        this(bitmap);
+        this.id = id;
+    }
 
     public String getPath() {
         return path;
     }
-//
-//    public void setPath(String path) {
-//        this.path = path;
-//    }
-//
+    
     public int getSelectCount() {
         return selectCount;
     }
-
+    
     public void setSelectCount(int selectCount) {
-        this.selectCount = selectCount;
+    this.selectCount = selectCount;
     }
 
     public int getPosition() {
@@ -47,5 +52,23 @@ public class Picture{
         this.position = position;
     }
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
 
+    public String getId() {
+        return id;
+    }
+
+    public File getFile() {return file;}
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setFile(File file) {this.file = file;}
 }
