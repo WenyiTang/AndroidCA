@@ -35,6 +35,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -131,11 +132,12 @@ public class LoadingImageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //pass a list of pictures to the next Activity
                 ArrayList<Picture> picturesSelected = rowAdapter.getAllPictureSelected();
+                ArrayList<Picture> picturesProcessed = removeBitmap(picturesSelected);
                 System.out.println("pictures Number:" + picturesSelected.size());
                 //jump to next Activity
-//                Intent intentDetail = new Intent(MainActivity.this, list.class);
-//                intentDetail.putParcelableArrayListExtra("listpicture", picturesSelected);
-//                startActivity(intentDetail);
+                Intent intentDetail = new Intent(getApplicationContext(), GamePlay.class);
+                intentDetail.putExtra("pictures", (Serializable) picturesProcessed);
+                startActivity(intentDetail);
             }
         });
 
@@ -327,7 +329,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 System.out.println("Rendering " + finalDestFilename);
-                                Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()));
+                                Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(picture);
 
                             }
@@ -379,6 +381,15 @@ public class LoadingImageActivity extends AppCompatActivity {
         }
     }
 
+    private ArrayList<Picture> removeBitmap(ArrayList<Picture> pictures) {
+        ArrayList<Picture> processedPics = new ArrayList<>();
+        for (Picture pic : pictures) {
+            File file = pic.getFile();
+            int position = pic.getPosition();
+            processedPics.add(new Picture(file, position));
+        }
+        return processedPics;
+    }
 
 
 

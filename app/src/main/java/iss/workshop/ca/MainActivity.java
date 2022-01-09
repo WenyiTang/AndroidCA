@@ -49,19 +49,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
     }
-
-    protected void startDownloadPicture(String imgURL) {
-        String destFilename = UUID.randomUUID().toString() + imgURL.lastIndexOf(".") + 1;
-        File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File destFile = new File(dir, destFilename);
-        pictures.add(new Picture(destFile));
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PictureDownloader imgDL = new PictureDownloader();
-                imgDL.downloadPicture(imgURL, destFile);
-            }
-        }).start();
-    }
 }

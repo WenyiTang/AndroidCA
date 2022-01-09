@@ -9,6 +9,7 @@ public class Picture implements Serializable {
     private Bitmap bitmap;
     private String id;
     private File file;
+    private String path;
     private int selectCount;
     private int position;
   
@@ -30,6 +31,16 @@ public class Picture implements Serializable {
     public Picture (Bitmap bitmap, String id) {
         this(bitmap);
         this.id = id;
+    }
+
+    public Picture (File file, int positions) {
+        this(file);
+        this.position= position;
+    }
+
+    public Picture (Bitmap bitmap, File file) {
+        this(bitmap);
+        this.file = file;
     }
 
     public String getPath() {
