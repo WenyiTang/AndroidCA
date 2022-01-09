@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 
@@ -34,6 +35,10 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
     private Chronometer simpleChronometer;
+
+    //background music
+    private MediaPlayer mediaPlayer;
+    public static boolean continueMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             ConstraintLayout menu = findViewById(R.id.menuPopup);
             menu.setVisibility(View.VISIBLE);
             ready = false;
+            MusicManager.pause();
         }
 
         if (view == resumeBtn){
@@ -126,15 +132,18 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             menu.setVisibility(View.INVISIBLE);
             resume();
             ready = true;
+            MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
+
         }
 
         if (view == playAgainBtn){
             restartGame();
+
         }
 
         if (view == mainMenuBtn || view == endMainMenuBtn){
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
             finish();
         }
 
@@ -241,6 +250,21 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             imgflipped[1].setVisibility(View.INVISIBLE);
             ready = true;
         }, 500);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 
 

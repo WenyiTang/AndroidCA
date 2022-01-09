@@ -2,6 +2,7 @@ package iss.workshop.ca;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button startBtn, guideBtn;
     private MediaPlayer mediaPlayer;
+    public static boolean continueMusic;
 
 
     @Override
@@ -24,16 +26,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         guideBtn = findViewById(R.id.guideBtn);
         guideBtn.setOnClickListener(this);
 
-        mediaPlayer = MediaPlayer.create(MainActivity.this,R.raw.background);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        //playBackground();
+    }
+
+    /*protected void playBackground(){
+        if (mediaPlayer == null){
+            mediaPlayer = MediaPlayer.create(MainActivity.this,R.raw.background);
+            if (!mediaPlayer.isPlaying()){
+                //isPlayingAudio=true;
+                mediaPlayer.setLooping(true);
+                mediaPlayer.start();
+            }
+        }
+
+    }*/
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mediaPlayer.start();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
+
+
+
 
     @Override
     public void onClick(View view) {
@@ -46,5 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, Guide.class);
             startActivity(intent);
         }
+
     }
 }

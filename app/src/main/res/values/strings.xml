@@ -5,6 +5,8 @@
 <!--Main Menu-->
     <string name="play_btn">Play</string>
     <string name="guide_btn">Guide</string>
+    <string name="setting_btn">Setting</string>
+    <string name="music_text">Music</string>
 
 <!--Guide-->
     <string name="guide_header">GUIDE</string>
