@@ -30,10 +30,10 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private boolean ready = false;
     private Integer matches = 0;
     private Integer triesCount = 0;
-
-    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn, startBtn;
+    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
     private long pauseTime;
     private Chronometer simpleChronometer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,6 +244,4 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             ready = true;
         }, 500);
     }
-
-
 }
