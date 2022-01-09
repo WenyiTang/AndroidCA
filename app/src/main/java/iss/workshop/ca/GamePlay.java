@@ -150,6 +150,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         if (view == mainMenuBtn || view == endMainMenuBtn){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            //starts new instance of MainActivity.
+            //To solve: will include android:launchMode="singleTask" in manifest later after putting tgt all functions
 
             finish();
         }
