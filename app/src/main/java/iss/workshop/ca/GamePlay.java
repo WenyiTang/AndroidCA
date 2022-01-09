@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -173,6 +175,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }
 
         if (view == mainMenuBtn || view == endMainMenuBtn){
+            deleteExistingImgFiles();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -291,7 +294,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private void generateBitmap(ArrayList<Picture> pictures) {
         for (Picture pic : pictures) {
             Bitmap bitmap = BitmapFactory.decodeFile(pic.getFile().getAbsolutePath());
-            pic.setBitmap(bitmap);
+            Bitmap bitmap_scaled = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+            pic.setBitmap(bitmap_scaled);
         }
     }
 
@@ -309,5 +313,23 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         return newPictures;
     }
 
-
+    private void deleteExistingImgFiles(){
+        File dir =getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File[] existingFiles = dir.listFiles();
+        // Delete existing images from directory
+        for(File file : existingFiles) {
+            try{
+                if(file.exists()) {
+                    System.out.print("Deleting file : " + file.getName());
+                    boolean result = file.delete();
+                    if(result) {
+                        System.out.println(", successful");
+                    }
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Error while deleting file");
+            }
+        }
+    }
 }

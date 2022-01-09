@@ -41,9 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startDownloadPicture(links[i]);
         };
 
-//        setPicturesId(pictures);
-//        generateBitmap(pictures);
-
         startBtn = findViewById(R.id.playGame);
         startBtn.setOnClickListener(this);
 
@@ -80,17 +77,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }).start();
     }
-
-//    protected void setPicturesId(ArrayList<Picture> pictures) {
-//        for (Integer i = 0; i < pictures.size(); i++) {
-//            pictures.get(i).setId(i.toString());
-//        }
-//    }
-//
-//    private void generateBitmap(ArrayList<Picture> pictures) {
-//        for (Picture pic : pictures) {
-//            Bitmap bitmap = BitmapFactory.decodeFile(pic.getFile().getAbsolutePath());
-//            pic.setBitmap(bitmap);
-//        }
-//    }
 }
