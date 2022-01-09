@@ -1,6 +1,10 @@
 package iss.workshop.ca;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +16,21 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     int[] picturesArr;
+    protected File dir;
+    protected File[] existingFiles;
+    protected ArrayList<Bitmap> imgBitmaps = new ArrayList<>();
+
 
 
     public interface ItemSelectedChangeListener{
@@ -39,6 +50,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
 
     public RowAdapter(Context context, List<Picture> pictures, RowAdapter.ItemSelectedChangeListener listener) {
+        //setImgBitmapsFromExtStorage();
         this.context = context;
         this.pictures = pictures;
         this.listener=listener;
@@ -60,7 +72,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         // set value to imageView  and TextView
-        holder.bind(pictures.get(position), position);
+        holder.bind(pictures.get(position), position,context);
 
 //        holder.imageView.setImageResource(picturesArr[position]);
 //        holder.textView.setText("1");
@@ -87,11 +99,32 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
             constraintLayoutItem_image = itemView.findViewById(R.id.item_image);
         }
 
-        public void bind(final Picture picture, final int position) {
+        public void bind(final Picture picture, final int position,Context context) {
 
-//            imageView.setImageResource(Integer.parseInt(picture.getPath()));
+           //imageView.setImageResource(Integer.parseInt(picture.getPath()));
 
-            imageView.setBackgroundResource(Integer.parseInt(picture.getPath()));
+//            Bitmap bitmap = null;
+//            String imgSrc = picture.getPath();
+//            try {
+//                bitmap = Glide.with(context)
+//                        .asBitmap()
+//                        .load(imgSrc)
+//                        .submit()
+//                        .get();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            // back to main thread
+//            Bitmap finalBitmap = bitmap;
+//
+//            imageView.setImageBitmap(finalBitmap);
+
+            //mageView.setBackgroundResource(Integer.parseInt(picture.getPath()));
+
+            imageView.setImageBitmap(picture.getBitmap());
 
 
             if (pictures.size() >= 20){
@@ -179,5 +212,31 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         });
 
         return (ArrayList<Picture>) picturesSelected;
+    }
+
+    private void setImgBitmapsFromExtStorage() {
+        dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        existingFiles = dir.listFiles();
+        for (File imgFile : existingFiles) {
+            Bitmap bitmap = null;
+
+            try {
+                if (imgFile.exists()) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 8;
+                    System.out.println("Trying to decode imgFile: " + imgFile.getAbsolutePath());
+                    bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    if (bitmap != null) {
+                        System.out.println("Decoding successful");
+                        imgBitmaps.add(bitmap);
+                    }
+
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }
