@@ -31,7 +31,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private Integer matches = 0;
     private Integer triesCount = 0;
 
-    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn;
+    private Button menuBtn, resumeBtn, playAgainBtn, endMainMenuBtn, mainMenuBtn, restartBtn, startBtn;
     private long pauseTime;
     private Chronometer simpleChronometer;
 
@@ -54,9 +54,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                             gridView.setAdapter(adapter);
                             gridView.setOnItemClickListener(GamePlay.this);
                             ready = true;
-                        }
-
-                        if (ready){
                             start();
                         }
                     }
@@ -99,7 +96,10 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         TextView matchesCount = findViewById(R.id.matchesCount);
         String matchStr = getString(R.string.matches_count, matches, img.length);
         matchesCount.setText(matchStr);
-        //matchesCount.setText(matches + " of " + img.length + " matches");
+
+        TextView tries = findViewById(R.id.tries);
+        String triesStr = getString(R.string.tries_count, triesCount);
+        tries.setText(triesStr);
     }
 
     private void populateImgs(String[] img, String[] imgs){
@@ -111,6 +111,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         Collections.shuffle(shuffledList);
         shuffledList.toArray(imgs);
     }
+
 
     @Override
     public void onClick(View view) {
@@ -150,6 +151,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     public void start(){
+        simpleChronometer.setBase(SystemClock.elapsedRealtime());
         simpleChronometer.start();
     }
 
