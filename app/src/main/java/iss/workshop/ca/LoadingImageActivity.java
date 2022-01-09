@@ -29,6 +29,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -58,6 +63,8 @@ public class LoadingImageActivity extends AppCompatActivity {
     private WebView mWebView;
     private String imageURLs;
     private String[] imageURLArray;
+    private Thread imgUrlThread;
+    private Thread downloadImagesThread;
 
     Thread thread;
     private int fetchClick = 0;
@@ -225,9 +232,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                     mWebView.loadUrl("about:blank");
                     Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_LONG).show();
                     //rowAdapter.pictures.clear();//clear previous images
-                    //setAdpter();
+                    setAdpter();
                     //mWebView.loadUrl("about:blank");
-                    loadPage();
+                    //loadPage();
+                    fetchImgSRCs();
+                    downloadImages();
                 }
                 else {
                     Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_LONG).show();
@@ -237,112 +246,57 @@ public class LoadingImageActivity extends AppCompatActivity {
             }
         });
     }
-    private void loadPage(){
-        mWebView.loadUrl("about:blank");
+    public void fetchImgSRCs(){
+        System.out.println("Executing fetchImgSRCs");
+        imgUrlThread = new Thread(() -> {
+            try {
+                int index = 0;
+                imageURLArray = new String[20];
+                // get http response and get parsed by Jsoup
+                Document document = Jsoup.connect(externalUrl).timeout(10000).get();
+                // get all <img> tags from http response
+                Elements elements = document.select("img");
+                for (Element element : elements) {
+                    // determine whether there is a correct image
+                    String imgSrc = element.attr("src");
 
-        mWebView.setWebViewClient(new WebViewClient() {
-
-
-                                      @Override
-                                      public void onPageFinished(WebView view, String url) {
-                                          super.onPageFinished(view,url);
-                                          System.out.println("External URL in loadPage() = " + mWebView.getUrl().toString());
-                                          System.out.println("page finished loading");
-
-
-                                          // Begin download process
-                                          if(mWebView.getUrl().toString().contains("about:blank")) {
-                                              System.out.println("Webview is in about:blank");
-                                          }
-                                          else {
-
-
-                                              getImgURLs(mWebView);
-                                          }
-
-
-
-                                      }
-                                  }
-        );
-
-        //mWebView.loadUrl(externalUrl);
-    }
-    public void getImgURLs(WebView webView) {
-        String javascriptFn = "(function() {let imageNodes = document.querySelectorAll(\"img\"); " +
-                "let imageSrcs = new Array(); " +
-                "imageNodes.forEach(imageNode => imageSrcs.push(imageNode.src));" +
-                "return imageSrcs; })()";
-        webView.evaluateJavascript(javascriptFn, new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String s) {
-                System.out.println("Callback for getImgURLs");
-                System.out.println(s);
-                externalUrl = null;
-                imageURLs = s;
-                //printImageURLs();
-                processImageUrlString();
-                downloadImages();
+                    // determine the file format
+                    if (imgSrc.contains(".jpg") || imgSrc.contains(".png")) {
+                        // get first 20 images
+                        if (index >= 20) {
+                            break;
+                        }
+                        System.out.println(imgSrc);
+                        imageURLArray[index] = imgSrc;
+                        index++;
+                    }
+                }
 
 
 
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
+        imgUrlThread.start();
 
 
     }
 
-    public void printImageURLs() {
-        System.out.println("Executing printImageURLs");
-        System.out.println(imageURLs);
-        try {
-            System.out.println("String Length = " + imageURLs.length());
-        }
-        catch (Exception e) {
-            System.out.println("Error. Probably not done loading");
-        }
-    }
-    public void processImageUrlString() {
 
 
-        imageURLArray = imageURLs.replace("\"","")
-                .replace("[","")
-                .replace("]","")
-                .split(",");
-
-
-        System.out.println("Length of imageURLArray = " + imageURLArray.length);
-        String[] tempStringArray = new String[20];
-        int counter = 0;
-        for (String url : imageURLArray) {
-            if(counter > 19){
-                break;
-            }
-            else if(url.contains(".jpg") || url.contains(".png"))
-            {
-                tempStringArray[counter] = url;
-                counter++;
-            }
-
-        }
-        imageURLArray = tempStringArray;
-        System.out.println("After processing image URLs");
-        for (String url : imageURLArray){
-            System.out.println(url);
-        }
-
-
-
-
-
-    }
     public void downloadImages() {
         System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
+        try {
+            imgUrlThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
 
-        new Thread (new Runnable() {
+        downloadImagesThread =  new Thread (new Runnable() {
             @Override
             public void run() {
                 System.out.println("entering new thread");
@@ -388,7 +342,8 @@ public class LoadingImageActivity extends AppCompatActivity {
 
             }
 
-        }).start();
+        });
+        downloadImagesThread.start();
 
     }
 
