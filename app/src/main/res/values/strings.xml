@@ -30,4 +30,5 @@
     <string name="congrats">"CONGRATULATIONS!\n\n You found \n %1$d matches \nin %2$s \nwith %3$d tries."</string>
     <string name="tries_count">Tries: %1$d</string>
     <string name="timer">Time: </string>
+    <string name="cardsize">150dp</string>
 </resources>

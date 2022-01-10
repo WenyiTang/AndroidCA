@@ -1,6 +1,7 @@
 package iss.workshop.ca;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Environment;
 import android.os.SystemClock;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -47,6 +49,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private ConstraintLayout menu;
     private ArrayList<Picture> duplicatePics;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                         endMainMenuBtn = findViewById(R.id.endMainMenu);
                         restartBtn = findViewById(R.id.restartBtn);
                         menu = findViewById(R.id.menuPopup);
-
                         initElements();
                     }
                 });
@@ -134,7 +136,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         if (restartBtn != null){
             restartBtn.setOnClickListener(this);
         }
-
+        
         String matchStr = getString(R.string.matches_count, matches, pictures.size());
         matchesCount.setText(matchStr);
 

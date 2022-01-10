@@ -68,6 +68,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread downloadImagesThread;
 
     private int difficulty = 0;
+    private TextView selectInstruct;
 
     Thread thread;
     private int fetchClick = 0;
@@ -78,8 +79,8 @@ public class LoadingImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_image);
 
-        getLayoutWidget();
         getDifficulty();
+        getLayoutWidget();
         //setDownloadBtn();
         setFetchBtnListener();//from Daniel
         setNextBtn();
@@ -114,9 +115,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                     if (number == difficulty){
 
                         nextBtn.setVisibility(View.VISIBLE);
+                        selectInstruct.setVisibility(View.INVISIBLE);
 
                     }else {
                         nextBtn.setVisibility(View.INVISIBLE);
+                        selectInstruct.setVisibility(View.VISIBLE);
                     }
 
                 } else {
@@ -155,6 +158,7 @@ public class LoadingImageActivity extends AppCompatActivity {
         downloading = findViewById(R.id.DownloadText);
         downloaded =findViewById(R.id.Downloaded);
         mWebView = findViewById(R.id.web_view);
+        selectInstruct = findViewById(R.id.selectInstruct);
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -192,15 +196,18 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                     int progress = rowAdapter.pictures.size() * 5;
                     progressBar.setProgress(progress);
+                    selectInstruct.setText("Please select " + difficulty + " images");
                     if(progress == 100){
                         progressBar.setVisibility(View.INVISIBLE);
                         downloading.setVisibility(View.INVISIBLE);
                         downloaded.setVisibility(View.VISIBLE);
+                        selectInstruct.setVisibility(View.VISIBLE);
                     }
                     else{
                         progressBar.setVisibility(View.VISIBLE);
                         downloading.setVisibility(View.VISIBLE);
                         downloaded.setVisibility(View.INVISIBLE);
+                        selectInstruct.setVisibility(View.INVISIBLE);
                         //progressBar.setProgress(progress);
                     }
                 }
