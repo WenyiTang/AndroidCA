@@ -220,15 +220,17 @@ public class LoadingImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard(LoadingImageActivity.this);
+
+                // FOR DEMO
+          /*      fetchClick++;
                 if(fetchClick % 2 == 0) {
-
                     urlInput.setText("stocksnap.io/search/cats");
-
                 }
                 else {
-
                     urlInput.setText("stocksnap.io/search/dogs");
-                }
+                }*/
+
+
                 externalUrl ="https://" + urlInput.getText().toString();
                 System.out.println("External URL = " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
@@ -239,7 +241,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     downloading.setVisibility(View.VISIBLE);
                     downloaded.setVisibility(View.INVISIBLE);
 
-                    fetchClick++;
+
 
                     // Stop imgUrlThread and downloadImagesThread
                     stopDownload = true;
@@ -276,9 +278,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                         rowAdapter.picturesSelected.clear();
                     }
 
-//                    setAdpter();
-                    //mWebView.loadUrl("about:blank");
-                    //loadPage();
 
                     // Allow imgUrlThread and downloadImagesThread to execute
                     stopDownload = false;
@@ -301,11 +300,10 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
     public void fetchImgSRCs(){
-        /*System.out.println("Executing fetchImgSRCs");*/
         imgUrlThread = new Thread(() -> {
 
             System.out.println("Starting imgUrlThread");
-            System.out.println("imgUrlThread name = " + imgUrlThread.getName());
+            //System.out.println("imgUrlThread name = " + imgUrlThread.getName());
 
             try {
                 int index = 0;
@@ -317,7 +315,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 for (Element element : elements) {
                     //System.out.println("imgUrlThread interrupted = " + imgUrlThread.isInterrupted());
                     if(stopDownload) {
-                        System.out.println("Ending imgUrlThread gracefully...");
+                        System.out.println("Ending imgUrlThread...");
                         return;
                     }
                     // determine whether there is a correct image
@@ -365,7 +363,7 @@ public class LoadingImageActivity extends AppCompatActivity {
             public void run() {
 
                 System.out.println("Starting downloadImagesThread");
-                System.out.println("downloadImagesThread name = " + downloadImagesThread.getName());
+                //System.out.println("downloadImagesThread name = " + downloadImagesThread.getName());
 
 
                 // Delete existing images on SD card
@@ -380,7 +378,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 for (String imgURL : imageURLArray) {
 
                     if(stopDownload) {
-                        System.out.println("Ending downloadImagesThread gracefully...");
+                        System.out.println("Aborting download...");
                         return;
                     }
                     destFilename =  "image_" + df.format(counter);
