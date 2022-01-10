@@ -235,6 +235,17 @@ public class LoadingImageActivity extends AppCompatActivity {
                     fetchImgSRCs();
                     downloadImages();
                     fetchClick++;
+                    if(fetchClick >= 2){
+                        if(downloadImagesThread != null){
+                            downloadImagesThread.interrupt();
+                        }
+                        if(imgUrlThread != null) {
+                            imgUrlThread.interrupt();
+                        }
+                        Toast.makeText(LoadingImageActivity.this, "re-downloading images", Toast.LENGTH_SHORT).show();
+                        fetchImgSRCs();
+                        downloadImages();
+                    }
                 }
                 else {
                     progressBar.setVisibility(View.INVISIBLE);
