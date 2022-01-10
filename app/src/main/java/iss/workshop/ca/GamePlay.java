@@ -47,6 +47,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private ConstraintLayout menu;
     private ArrayList<Picture> duplicatePics;
 
+    public static boolean continueMusic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,12 +181,14 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             pause();
             menu.setVisibility(View.VISIBLE);
             ready = false;
+            MusicManager.pause();
         }
 
         if (view == resumeBtn){
             menu.setVisibility(View.INVISIBLE);
             resume();
             ready = true;
+            MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
         }
 
         if (view == playAgainBtn){
@@ -362,5 +366,21 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                 System.out.println("Error while deleting file");
             }
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 }
