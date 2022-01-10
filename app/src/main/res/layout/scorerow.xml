@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/rank"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="Rank: "
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="left"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/attempts"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="Attempts: "
+        android:textSize="20sp"
+        android:gravity="left"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/timeTaken"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="Time Taken: "
+        android:textSize="20sp"
+        android:gravity="left"
+        android:layout_marginLeft="20dp"/>
+
+</LinearLayout>

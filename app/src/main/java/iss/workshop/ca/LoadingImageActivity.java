@@ -67,8 +67,12 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
 
+
     private int difficulty = 0;
     private TextView selectInstruct;
+
+    protected int RequireSelectedSize = 6;
+
 
     Thread thread;
     private int fetchClick = 0;
@@ -81,19 +85,17 @@ public class LoadingImageActivity extends AppCompatActivity {
 
         getDifficulty();
         getLayoutWidget();
-        //setDownloadBtn();
         setFetchBtnListener();//from Daniel
         setNextBtn();
         setAdpter();
-
+        initPictureData();
     }
 
 
     public void initPictureData(){
 
-        for (int i = 0; i < arr.length;i++){
-            int imageId = arr[i];
-            Picture picture = new Picture(String.valueOf(imageId));
+        for (int i = 0; i < 20;i++){
+            Picture picture = new Picture();
             pictures.add(picture);
         }
 
@@ -111,6 +113,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 if (number > 0) {
                     //check how many images are currently selected
                     System.out.println("current have pictures count: " + number);
+
 
                     if (number == difficulty){
 
@@ -165,66 +168,57 @@ public class LoadingImageActivity extends AppCompatActivity {
     }
 
 
-    private void setDownloadBtn(){
-        downloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int[] newdataArr = {R.drawable.afraid};
-                for (int i = 0; i < newdataArr.length;i++){
-                int imageId = newdataArr[i];
-                Picture picture = new Picture(String.valueOf(imageId));
-                onePictureDownloadSuccess(picture);
-         }
-
-            }
-        });
-    }
-
-
-
-
-
-    private void setProgressBarBycheckDownloadPictureNumber(){
+    private void setProgressBarBycheckDownloadPictureNumber(int index){
 
         if (rowAdapter.pictures != null){
 
-            ValueAnimator animator = ValueAnimator.ofInt(0, 100);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+            if(rowAdapter.pictures.get(index).getBitmap() != null){
+                TextView downloading = findViewById(R.id.DownloadText);
+                String downloadStr = getString(R.string.DownloadText, index,pictures.size());
+                downloading.setText(downloadStr);
+                ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
 
-                    int progress = rowAdapter.pictures.size() * 5;
-                    progressBar.setProgress(progress);
-                    selectInstruct.setText("Please select " + difficulty + " images");
-                    if(progress == 100){
-                        progressBar.setVisibility(View.INVISIBLE);
-                        downloading.setVisibility(View.INVISIBLE);
-                        downloaded.setVisibility(View.VISIBLE);
-                        selectInstruct.setVisibility(View.VISIBLE);
+                        int progress = (index + 1) * 5;
+                        progressBar.setProgress(progress);
+                        selectInstruct.setText("Please select " + difficulty + " images");
+
+                        if(progress == 100){
+                            progressBar.setVisibility(View.INVISIBLE);
+                            downloading.setVisibility(View.INVISIBLE);
+                            TextView downloaded = findViewById(R.id.Downloaded);
+                            String downloadedStr = getString(R.string.Downloaded,pictures.size());
+                            downloaded.setText(downloadedStr);
+                            downloaded.setVisibility(View.VISIBLE);
+                            selectInstruct.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            progressBar.setVisibility(View.VISIBLE);
+                            downloading.setVisibility(View.VISIBLE);
+                            downloaded.setVisibility(View.INVISIBLE);
+                            selectInstruct.setVisibility(View.INVISIBLE);
+                            //progressBar.setProgress(progress);
+                        }
                     }
-                    else{
-                        progressBar.setVisibility(View.VISIBLE);
-                        downloading.setVisibility(View.VISIBLE);
-                        downloaded.setVisibility(View.INVISIBLE);
-                        selectInstruct.setVisibility(View.INVISIBLE);
-                        //progressBar.setProgress(progress);
-                    }
-                }
-            });
-            animator.setRepeatCount(0);
+                });
+                animator.setRepeatCount(0);
 //            animator.setDuration(2000);
-            animator.start();
+                animator.start();
+            }else {
 
+            }
         }
 
     }
 
 
-    public void onePictureDownloadSuccess(Picture picture){
+    public void onePictureDownloadSuccess(int index,Picture picture){
 
-        rowAdapter.pictures.add(picture);
-        setProgressBarBycheckDownloadPictureNumber();
+        System.out.println("currentIndex :" + index);
+        rowAdapter.pictures.set(index,picture);
+        setProgressBarBycheckDownloadPictureNumber(index);
         rowAdapter.notifyDataSetChanged();
 
 
@@ -242,14 +236,33 @@ public class LoadingImageActivity extends AppCompatActivity {
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
                     mWebView.loadUrl("about:blank");
                     Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_LONG).show();
-                    //rowAdapter.pictures.clear();//clear previous images
-                    setAdpter();
+
+                    progressBar.setVisibility(View.VISIBLE);
+                    downloading.setVisibility(View.VISIBLE);
+                    downloaded.setVisibility(View.INVISIBLE);
+
+                    //clear previous images and reset the default image
+                    rowAdapter.pictures.clear();//clear previous images
+                    for (int i = 0; i < 20;i++){
+                        Picture picture = new Picture();
+                        rowAdapter.pictures.add(picture);
+                    }
+                    rowAdapter.notifyDataSetChanged();
+
+                    if (rowAdapter.picturesSelected.size() != 0 && rowAdapter != null){
+                        rowAdapter.count = 0;
+                        rowAdapter.picturesSelected.clear();
+                    }
+
+//                    setAdpter();
                     //mWebView.loadUrl("about:blank");
                     //loadPage();
                     fetchImgSRCs();
                     downloadImages();
                 }
                 else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    downloading.setVisibility(View.INVISIBLE);
                     Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_LONG).show();
                 }
 
@@ -272,7 +285,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     String imgSrc = element.attr("src");
 
                     // determine the file format
-                    if (imgSrc.contains(".jpg") || imgSrc.contains(".png")) {
+                    if ((imgSrc.contains(".jpg") || imgSrc.contains(".png")) && imgSrc.contains("https://")) {
                         // get first 20 images
                         if (index >= 20) {
                             break;
@@ -323,7 +336,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
                     destFilename =  "image_" + df.format(counter);
-                    counter++;
                     System.out.println("Downloading image from: " + imgURL);
 
                     destFile = new File(dir,destFilename);
@@ -334,19 +346,20 @@ public class LoadingImageActivity extends AppCompatActivity {
                         System.out.println("Downloaded file: " + destFilename);
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
+                        int finalCounter = counter;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 System.out.println("Rendering " + finalDestFilename);
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
-                                onePictureDownloadSuccess(picture);
+                                onePictureDownloadSuccess(finalCounter,picture);
 
                             }
                         });
 
-
-
                     }
+
+                    counter++;
 
                 }
 

@@ -38,9 +38,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/selectImage"
+        app:layout_constraintBottom_toTopOf="@id/leaderboardBtn"
+        android:text="@string/guide_btn"/>
+
+    <Button
+        android:id="@+id/leaderboardBtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="150dp"
-        android:text="@string/guide_btn"/>
+        android:text="Leaderboard"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

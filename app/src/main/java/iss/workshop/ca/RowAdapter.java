@@ -31,6 +31,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     protected File[] existingFiles;
     protected ArrayList<Bitmap> imgBitmaps = new ArrayList<>();
 
+    protected int RequireSelectedSize = 6;
 
 
     public interface ItemSelectedChangeListener{
@@ -40,9 +41,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     public List<Picture> pictures;
     private Context context;
-    private List<Picture> picturesSelected;
-    int count = 0;
+    public List<Picture> picturesSelected;
+    public int count = 0;
     int size = 0;
+
 
 
     public RowAdapter(int[] picturesArr) {
@@ -103,33 +105,15 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         public void bind(final Picture picture, final int position,Context context) {
 
-           //imageView.setImageResource(Integer.parseInt(picture.getPath()));
+            if (picture.getBitmap() == null){
 
-//            Bitmap bitmap = null;
-//            String imgSrc = picture.getPath();
-//            try {
-//                bitmap = Glide.with(context)
-//                        .asBitmap()
-//                        .load(imgSrc)
-//                        .submit()
-//                        .get();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            // back to main thread
-//            Bitmap finalBitmap = bitmap;
-//
-//            imageView.setImageBitmap(finalBitmap);
+                imageView.setBackgroundResource(R.drawable.no_img);
 
-            //mageView.setBackgroundResource(Integer.parseInt(picture.getPath()));
+            }else {
+                imageView.setImageBitmap(picture.getBitmap());
+            }
 
-            imageView.setImageBitmap(picture.getBitmap());
-
-
-            if (pictures.size() >= 20){
+            if (pictures.size() >= 20 && pictures.get(19).getBitmap() != null){
                 textView.setVisibility(View.VISIBLE);
             }else {
                 textView.setVisibility(View.INVISIBLE);
@@ -173,9 +157,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
                         } else {
 
+
                             if (picturesSelected.size() >= size){
-
-
 
                             }else {
 

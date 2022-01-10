@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private long pauseTime;
     private Chronometer simpleChronometer;
     private ConstraintLayout menu;
+    private ConstraintLayout endPopup;
     private ArrayList<Picture> duplicatePics;
 
 
@@ -85,6 +87,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                         endMainMenuBtn = findViewById(R.id.endMainMenu);
                         restartBtn = findViewById(R.id.restartBtn);
                         menu = findViewById(R.id.menuPopup);
+                        endPopup = findViewById(R.id.endGame);
+
                         initElements();
                     }
                 });
@@ -180,19 +184,24 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         if (view == menuBtn){
             pause();
             menu.setVisibility(View.VISIBLE);
+            menuBtn.setVisibility(View.INVISIBLE);
             ready = false;
         }
 
         if (view == resumeBtn){
             menu.setVisibility(View.INVISIBLE);
+            menuBtn.setVisibility(View.VISIBLE);
             resume();
             ready = true;
         }
 
         if (view == playAgainBtn){
-            Intent intent = new Intent(this, LoadingImageActivity.class);
-            startActivity(intent);
-            finish();
+//            Intent intent = new Intent(this, LoadingImageActivity.class);
+//            startActivity(intent);
+//            finish();
+//            overridePendingTransition(0,0);
+            restartGame();
+            endPopup.setVisibility(View.INVISIBLE);
         }
 
         if (view == mainMenuBtn || view == endMainMenuBtn){
@@ -222,6 +231,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         matches = 0;
         triesCount = 0;
 
+        cardflipped[0] = null;
+        cardflipped[1] = null;
+
         String matchStr = getString(R.string.matches_count, matches, pictures.size());
         matchesCount.setText(matchStr);
 
@@ -229,6 +241,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         tries.setText(triesStr);
 
         menu.setVisibility(View.INVISIBLE);
+        menuBtn.setVisibility(View.VISIBLE);
     }
 
     public void start(){
@@ -275,7 +288,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         menuBtn.setVisibility(View.INVISIBLE);
 
-        ConstraintLayout endPopup = findViewById(R.id.endGame);
+        updateScore(triesCount, timeTaken);
+      
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
@@ -365,4 +379,13 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             }
         }
     }
+
+    private void updateScore(int attempts, String timeTaken) {
+        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("attemptsNew", attempts);
+        editor.putString("timeTakenNew", timeTaken);
+        editor.commit();
+    }
+
 }

@@ -17,6 +17,9 @@
     <string name="hard_diff">Hard</string>
     <string name="cancel_diff">Cancel</string>
 
+    <!--ImageLoading-->
+    <string name="DownloadText">"  %1$d of %2$d images downloaded."</string>
+    <string name="Downloaded">"%1$d Images Downloaded."</string>
 
     <!--Gameplay-->
     <string name="menu_btn">Menu</string>
