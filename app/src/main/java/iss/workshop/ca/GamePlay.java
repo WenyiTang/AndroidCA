@@ -368,10 +368,10 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     private void updateScore(int attempts, String timeTaken) {
-        SharedPreferences pref = getSharedPreferences("newScore", MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("attempts", attempts);
-        editor.putString("timeTaken", timeTaken);
+        editor.putInt("attemptsNew", attempts);
+        editor.putString("timeTakenNew", timeTaken);
         editor.commit();
     }
 

@@ -9,7 +9,7 @@
         android:id="@+id/rank"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:text="Rank: 0"
+        android:text="Rank: "
         android:textStyle="bold"
         android:textSize="20sp"
         android:gravity="left"
@@ -19,7 +19,7 @@
         android:id="@+id/attempts"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:text="Attempts: 0"
+        android:text="Attempts: "
         android:textSize="20sp"
         android:gravity="left"
         android:layout_marginLeft="20dp"/>
@@ -28,7 +28,7 @@
         android:id="@+id/timeTaken"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:text="Time Taken: 00:00"
+        android:text="Time Taken: "
         android:textSize="20sp"
         android:gravity="left"
         android:layout_marginLeft="20dp"/>
