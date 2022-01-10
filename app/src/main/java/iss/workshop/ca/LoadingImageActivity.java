@@ -253,7 +253,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     String imgSrc = element.attr("src");
 
                     // determine the file format
-                    if (imgSrc.contains(".jpg") || imgSrc.contains(".png")) {
+                    if ((imgSrc.contains(".jpg") || imgSrc.contains(".png")) && imgSrc.contains("https://")) {
                         // get first 20 images
                         if (index >= 20) {
                             break;
