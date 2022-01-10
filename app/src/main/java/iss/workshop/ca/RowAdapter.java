@@ -42,6 +42,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     private Context context;
     private List<Picture> picturesSelected;
     int count = 0;
+    int size = 0;
 
 
     public RowAdapter(int[] picturesArr) {
@@ -49,12 +50,13 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     }
 
 
-    public RowAdapter(Context context, List<Picture> pictures, RowAdapter.ItemSelectedChangeListener listener) {
+    public RowAdapter(Context context, List<Picture> pictures, int size, RowAdapter.ItemSelectedChangeListener listener) {
         //setImgBitmapsFromExtStorage();
         this.context = context;
         this.pictures = pictures;
         this.listener=listener;
         this.picturesSelected = new ArrayList<>();
+        this.size = size;
     }
 
 
@@ -171,7 +173,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
                         } else {
 
-                            if (picturesSelected.size() >= 6){
+                            if (picturesSelected.size() >= size){
 
 
 

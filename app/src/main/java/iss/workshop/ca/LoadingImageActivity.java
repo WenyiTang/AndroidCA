@@ -67,6 +67,8 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
 
+    private int difficulty = 0;
+
     Thread thread;
     private int fetchClick = 0;
 
@@ -77,6 +79,7 @@ public class LoadingImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loading_image);
 
         getLayoutWidget();
+        getDifficulty();
         //setDownloadBtn();
         setFetchBtnListener();//from Daniel
         setNextBtn();
@@ -101,14 +104,14 @@ public class LoadingImageActivity extends AppCompatActivity {
         //initPictureData();
         layoutManager = new GridLayoutManager(this,4);
         recyclerView.setLayoutManager(layoutManager);
-        rowAdapter = new RowAdapter(this, pictures, new RowAdapter.ItemSelectedChangeListener() {
+        rowAdapter = new RowAdapter(this, pictures, difficulty, new RowAdapter.ItemSelectedChangeListener() {
             @Override
             public void onItemSelectedChange(int number) {
                 if (number > 0) {
                     //check how many images are currently selected
                     System.out.println("current have pictures count: " + number);
 
-                    if (number == 6){
+                    if (number == difficulty){
 
                         nextBtn.setVisibility(View.VISIBLE);
 
@@ -390,6 +393,17 @@ public class LoadingImageActivity extends AppCompatActivity {
         return processedPics;
     }
 
+    private void getDifficulty() {
+        Intent intent = getIntent();
+        String diff = intent.getStringExtra("diff");
+        if (diff.equals("normal")) {
+            difficulty = 6;
+        };
+        if (diff.equals("hard")) {
+            difficulty = 8;
+        }
+        return;
+    }
 
 
 
