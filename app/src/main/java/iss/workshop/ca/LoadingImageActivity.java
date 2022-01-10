@@ -240,9 +240,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                     if(fetchClick >= 2){
 
                         if(downloadImagesThread != null){
+                            System.out.println("Interrupt download");
                             downloadImagesThread.interrupt();
                         }
                         if(imgUrlThread != null) {
+                            System.out.println("Interrupt fetchurl");
                             imgUrlThread.interrupt();
                         }
                         rowAdapter.pictures.clear();//clear previous images
