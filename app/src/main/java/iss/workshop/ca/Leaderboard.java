@@ -17,8 +17,6 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
     private Button returnBtn, clearBtn;
     private int[] topAttempts = new int[5];
     private String[] topTime = new String[5];
-    private int mostRecentAttempts;
-    private String mostRecentTimeTaken;
     List<Score> topScores = new ArrayList<>();
     List<String> attemptStrings = new ArrayList<>();
     List<String> timeStrings = new ArrayList<>();
