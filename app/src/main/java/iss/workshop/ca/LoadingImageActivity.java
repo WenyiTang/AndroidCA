@@ -58,7 +58,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private TextView downloading;
     private TextView downloaded;
 
-    //Daniel
+
     private EditText urlInput;
     private String externalUrl;
     private WebView mWebView;
@@ -67,7 +67,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
 
-    Thread thread;
+
     private int fetchClick = 0;
 
 
@@ -234,6 +234,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     //loadPage();
                     fetchImgSRCs();
                     downloadImages();
+                    fetchClick++;
                 }
                 else {
                     progressBar.setVisibility(View.INVISIBLE);
