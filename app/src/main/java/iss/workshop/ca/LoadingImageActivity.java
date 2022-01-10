@@ -217,13 +217,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoadingImageActivity.this);
 
                 // FOR DEMO
-                fetchClick++;
+                /*fetchClick++;
                 if(fetchClick % 2 == 0) {
                     urlInput.setText("stocksnap.io/search/cats");
                 }
                 else {
                     urlInput.setText("stocksnap.io/search/dogs");
-                }
+                }*/
 
 
                 externalUrl ="https://" + urlInput.getText().toString();
