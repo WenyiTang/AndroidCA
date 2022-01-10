@@ -221,7 +221,14 @@ public class LoadingImageActivity extends AppCompatActivity {
                     downloading.setVisibility(View.VISIBLE);
                     downloaded.setVisibility(View.INVISIBLE);
 
-                    //rowAdapter.pictures.clear();//clear previous images
+                    //clear previous images and reset the default image
+                    rowAdapter.pictures.clear();//clear previous images
+                    for (int i = 0; i < 20;i++){
+                        Picture picture = new Picture();
+                        rowAdapter.pictures.add(picture);
+                    }
+                    rowAdapter.notifyDataSetChanged();
+
 //                    setAdpter();
                     //mWebView.loadUrl("about:blank");
                     //loadPage();
