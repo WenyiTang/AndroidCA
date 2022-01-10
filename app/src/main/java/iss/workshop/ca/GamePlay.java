@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -87,6 +88,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                         restartBtn = findViewById(R.id.restartBtn);
                         menu = findViewById(R.id.menuPopup);
                         endPopup = findViewById(R.id.endGame);
+
                         initElements();
                     }
                 });
@@ -286,6 +288,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         menuBtn.setVisibility(View.INVISIBLE);
 
+        updateScore(triesCount, timeTaken);
+      
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
@@ -375,4 +379,13 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             }
         }
     }
+
+    private void updateScore(int attempts, String timeTaken) {
+        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("attemptsNew", attempts);
+        editor.putString("timeTakenNew", timeTaken);
+        editor.commit();
+    }
+
 }
