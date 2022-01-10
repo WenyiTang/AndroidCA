@@ -46,6 +46,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private long pauseTime;
     private Chronometer simpleChronometer;
     private ConstraintLayout menu;
+    private ConstraintLayout endPopup;
     private ArrayList<Picture> duplicatePics;
 
     @Override
@@ -83,6 +84,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                         endMainMenuBtn = findViewById(R.id.endMainMenu);
                         restartBtn = findViewById(R.id.restartBtn);
                         menu = findViewById(R.id.menuPopup);
+                        endPopup = findViewById(R.id.endGame);
 
                         initElements();
                     }
@@ -179,19 +181,24 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         if (view == menuBtn){
             pause();
             menu.setVisibility(View.VISIBLE);
+            menuBtn.setVisibility(View.INVISIBLE);
             ready = false;
         }
 
         if (view == resumeBtn){
             menu.setVisibility(View.INVISIBLE);
+            menuBtn.setVisibility(View.VISIBLE);
             resume();
             ready = true;
         }
 
         if (view == playAgainBtn){
-            Intent intent = new Intent(this, LoadingImageActivity.class);
-            startActivity(intent);
-            finish();
+//            Intent intent = new Intent(this, LoadingImageActivity.class);
+//            startActivity(intent);
+//            finish();
+//            overridePendingTransition(0,0);
+            restartGame();
+            endPopup.setVisibility(View.INVISIBLE);
         }
 
         if (view == mainMenuBtn || view == endMainMenuBtn){
@@ -221,6 +228,9 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         matches = 0;
         triesCount = 0;
 
+        cardflipped[0] = null;
+        cardflipped[1] = null;
+
         String matchStr = getString(R.string.matches_count, matches, pictures.size());
         matchesCount.setText(matchStr);
 
@@ -228,6 +238,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         tries.setText(triesStr);
 
         menu.setVisibility(View.INVISIBLE);
+        menuBtn.setVisibility(View.VISIBLE);
     }
 
     public void start(){
@@ -275,8 +286,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         menuBtn.setVisibility(View.INVISIBLE);
 
         updateScore(triesCount, timeTaken);
-
-        ConstraintLayout endPopup = findViewById(R.id.endGame);
+      
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);

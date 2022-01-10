@@ -67,6 +67,8 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
 
+    protected int RequireSelectedSize = 6;
+
     Thread thread;
     private int fetchClick = 0;
 
@@ -106,7 +108,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     //check how many images are currently selected
                     System.out.println("current have pictures count: " + number);
 
-                    if (number == 6){
+                    if (number == RequireSelectedSize){
 
                         nextBtn.setVisibility(View.VISIBLE);
 
@@ -228,6 +230,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                         rowAdapter.pictures.add(picture);
                     }
                     rowAdapter.notifyDataSetChanged();
+
+                    if (rowAdapter.picturesSelected.size() != 0 && rowAdapter != null){
+                        rowAdapter.count = 0;
+                        rowAdapter.picturesSelected.clear();
+                    }
 
 //                    setAdpter();
                     //mWebView.loadUrl("about:blank");
