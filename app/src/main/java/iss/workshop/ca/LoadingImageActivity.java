@@ -222,19 +222,19 @@ public class LoadingImageActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoadingImageActivity.this);
 
                 // FOR DEMO
-          /*      fetchClick++;
+                fetchClick++;
                 if(fetchClick % 2 == 0) {
                     urlInput.setText("stocksnap.io/search/cats");
                 }
                 else {
                     urlInput.setText("stocksnap.io/search/dogs");
-                }*/
+                }
 
 
                 externalUrl ="https://" + urlInput.getText().toString();
-                System.out.println("External URL = " + externalUrl);
+                System.out.println("Get images from " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
-                    mWebView.loadUrl("about:blank");
+
                     Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_SHORT).show();
 
                     progressBar.setVisibility(View.VISIBLE);
@@ -288,6 +288,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                 }
                 else {
+                    System.out.println(externalUrl + " is an invalid web URL. Aborting...");
                     progressBar.setVisibility(View.INVISIBLE);
                     downloading.setVisibility(View.INVISIBLE);
                     Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_SHORT).show();
