@@ -238,10 +238,16 @@ public class LoadingImageActivity extends AppCompatActivity {
                     downloadImages();
                     fetchClick++;
                     if(fetchClick >= 2){
-                        if(fetchClick % 2 == 0)
+                        if(fetchClick % 2 == 0) {
                             externalUrl = "https://stocksnap.io/search/cats";
-                        else
-                            externalUrl = "https://stocksnap.io/search/dogs";
+                            urlInput.setText("stocksnap.io/search/cats");
+
+                        }
+                        else {
+                            externalUrl = "https://stocksnap.io";
+                            urlInput.setText("stocksnap.io");
+                        }
+
 
 
                         if(downloadImagesThread != null){
