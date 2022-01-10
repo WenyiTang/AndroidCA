@@ -62,8 +62,6 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     private EditText urlInput;
     private String externalUrl;
-    private WebView mWebView;
-    private String imageURLs;
     private String[] imageURLArray;
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
@@ -155,10 +153,7 @@ public class LoadingImageActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         downloading = findViewById(R.id.DownloadText);
         downloaded =findViewById(R.id.Downloaded);
-        mWebView = findViewById(R.id.web_view);
 
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
     }
 
 
