@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -290,6 +291,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
         endPopup.setVisibility(View.VISIBLE);
+
+        updateScore(triesCount, timeTaken);
     }
 
     protected void move1(ImageView imageView, int i){
@@ -374,5 +377,27 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                 System.out.println("Error while deleting file");
             }
         }
+    }
+
+    private void updateScore(int attempts, String timeTaken) {
+
+        String scoresFileName = "";
+
+        if (pictures.size() == 6){
+            scoresFileName = "normal";
+        }
+        else if (pictures.size() == 8){
+            scoresFileName = "hard";
+        }
+
+        SharedPreferences pref = getSharedPreferences(scoresFileName, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("attemptsNew", attempts);
+        editor.putString("timeTakenNew", timeTaken);
+        editor.commit();
+
+        SortScore sorter = new SortScore();
+        sorter.updateScoreboard(pref);
     }
 }
