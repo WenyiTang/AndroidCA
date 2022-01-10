@@ -31,6 +31,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     protected File[] existingFiles;
     protected ArrayList<Bitmap> imgBitmaps = new ArrayList<>();
 
+    protected int RequireSelectedSize = 6;
 
 
     public interface ItemSelectedChangeListener{
@@ -153,7 +154,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
                         } else {
 
-                            if (picturesSelected.size() >= 6){
+                            if (picturesSelected.size() >= RequireSelectedSize){
 
 
 
