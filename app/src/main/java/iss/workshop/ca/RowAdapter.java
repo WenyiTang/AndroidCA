@@ -124,10 +124,15 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
             //mageView.setBackgroundResource(Integer.parseInt(picture.getPath()));
 
-            imageView.setImageBitmap(picture.getBitmap());
+            if (picture.getBitmap() == null){
 
+                imageView.setBackgroundResource(R.drawable.no_img);
 
-            if (pictures.size() >= 20){
+            }else {
+                imageView.setImageBitmap(picture.getBitmap());
+            }
+
+            if (pictures.size() >= 20 && pictures.get(19).getBitmap() != null){
                 textView.setVisibility(View.VISIBLE);
             }else {
                 textView.setVisibility(View.INVISIBLE);

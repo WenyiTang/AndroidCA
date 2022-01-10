@@ -77,19 +77,17 @@ public class LoadingImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loading_image);
 
         getLayoutWidget();
-        //setDownloadBtn();
         setFetchBtnListener();//from Daniel
         setNextBtn();
         setAdpter();
-
+        initPictureData();
     }
 
 
     public void initPictureData(){
 
-        for (int i = 0; i < arr.length;i++){
-            int imageId = arr[i];
-            Picture picture = new Picture(String.valueOf(imageId));
+        for (int i = 0; i < 20;i++){
+            Picture picture = new Picture();
             pictures.add(picture);
         }
 
@@ -158,63 +156,49 @@ public class LoadingImageActivity extends AppCompatActivity {
     }
 
 
-    private void setDownloadBtn(){
-        downloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int[] newdataArr = {R.drawable.afraid};
-                for (int i = 0; i < newdataArr.length;i++){
-                int imageId = newdataArr[i];
-                Picture picture = new Picture(String.valueOf(imageId));
-                onePictureDownloadSuccess(picture);
-         }
-
-            }
-        });
-    }
-
-
-
-
-
-    private void setProgressBarBycheckDownloadPictureNumber(){
+    private void setProgressBarBycheckDownloadPictureNumber(int index){
 
         if (rowAdapter.pictures != null){
 
-            ValueAnimator animator = ValueAnimator.ofInt(0, 100);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+            if(rowAdapter.pictures.get(index).getBitmap() != null){
 
-                    int progress = rowAdapter.pictures.size() * 5;
-                    progressBar.setProgress(progress);
-                    if(progress == 100){
-                        progressBar.setVisibility(View.INVISIBLE);
-                        downloading.setVisibility(View.INVISIBLE);
-                        downloaded.setVisibility(View.VISIBLE);
+                ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+
+                        int progress = (index + 1) * 5;
+                        progressBar.setProgress(progress);
+
+                        if(progress == 100){
+                            progressBar.setVisibility(View.INVISIBLE);
+                            downloading.setVisibility(View.INVISIBLE);
+                            downloaded.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            progressBar.setVisibility(View.VISIBLE);
+                            downloading.setVisibility(View.VISIBLE);
+                            downloaded.setVisibility(View.INVISIBLE);
+                            //progressBar.setProgress(progress);
+                        }
                     }
-                    else{
-                        progressBar.setVisibility(View.VISIBLE);
-                        downloading.setVisibility(View.VISIBLE);
-                        downloaded.setVisibility(View.INVISIBLE);
-                        //progressBar.setProgress(progress);
-                    }
-                }
-            });
-            animator.setRepeatCount(0);
+                });
+                animator.setRepeatCount(0);
 //            animator.setDuration(2000);
-            animator.start();
+                animator.start();
+            }else {
 
+            }
         }
 
     }
 
 
-    public void onePictureDownloadSuccess(Picture picture){
+    public void onePictureDownloadSuccess(int index,Picture picture){
 
-        rowAdapter.pictures.add(picture);
-        setProgressBarBycheckDownloadPictureNumber();
+        System.out.println("currentIndex :" + index);
+        rowAdapter.pictures.set(index,picture);
+        setProgressBarBycheckDownloadPictureNumber(index);
         rowAdapter.notifyDataSetChanged();
 
 
@@ -232,14 +216,21 @@ public class LoadingImageActivity extends AppCompatActivity {
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
                     mWebView.loadUrl("about:blank");
                     Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_LONG).show();
+
+                    progressBar.setVisibility(View.VISIBLE);
+                    downloading.setVisibility(View.VISIBLE);
+                    downloaded.setVisibility(View.INVISIBLE);
+
                     //rowAdapter.pictures.clear();//clear previous images
-                    setAdpter();
+//                    setAdpter();
                     //mWebView.loadUrl("about:blank");
                     //loadPage();
                     fetchImgSRCs();
                     downloadImages();
                 }
                 else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    downloading.setVisibility(View.INVISIBLE);
                     Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_LONG).show();
                 }
 
@@ -313,7 +304,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
                     destFilename =  "image_" + df.format(counter);
-                    counter++;
                     System.out.println("Downloading image from: " + imgURL);
 
                     destFile = new File(dir,destFilename);
@@ -324,19 +314,20 @@ public class LoadingImageActivity extends AppCompatActivity {
                         System.out.println("Downloaded file: " + destFilename);
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
+                        int finalCounter = counter;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 System.out.println("Rendering " + finalDestFilename);
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
-                                onePictureDownloadSuccess(picture);
+                                onePictureDownloadSuccess(finalCounter,picture);
 
                             }
                         });
 
-
-
                     }
+
+                    counter++;
 
                 }
 
