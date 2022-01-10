@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -273,6 +274,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         menuBtn.setVisibility(View.INVISIBLE);
 
+        updateScore(triesCount, timeTaken);
+
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
@@ -363,4 +366,13 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             }
         }
     }
+
+    private void updateScore(int attempts, String timeTaken) {
+        SharedPreferences pref = getSharedPreferences("newScore", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("attempts", attempts);
+        editor.putString("timeTaken", timeTaken);
+        editor.commit();
+    }
+
 }
