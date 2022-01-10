@@ -206,8 +206,6 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     }
 
-    //Daniel's methods start here
-
     private void setFetchBtnListener() {
         downloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,7 +230,30 @@ public class LoadingImageActivity extends AppCompatActivity {
                     downloading.setVisibility(View.VISIBLE);
                     downloaded.setVisibility(View.INVISIBLE);
 
-                    //clear previous images and reset the default image
+                    fetchClick++;
+
+                    // Stop imgUrlThread and downloadImagesThread
+                    stopDownload = true;
+
+                    // Ensure that imgUrlThread has terminated
+                    if (imgUrlThread != null) {
+                        try {
+                            imgUrlThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Ensure that downloadImagesThread has terminated
+                    if (downloadImagesThread != null) {
+                        try {
+                            downloadImagesThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Clear images from view
                     rowAdapter.pictures.clear();//clear previous images
                     for (int i = 0; i < 20;i++){
                         Picture picture = new Picture();
@@ -240,41 +261,12 @@ public class LoadingImageActivity extends AppCompatActivity {
                     }
                     rowAdapter.notifyDataSetChanged();
 
-                    fetchClick++;
+                    // Allow imgUrlThread and downloadImagesThread to execute
+                    stopDownload = false;
 
-                        if(imgUrlThread != null) {
-                           // System.out.println("Before interrupt fetchurl " + imgUrlThread.getName());
-                            //System.out.println("imgUrlthread.isAlive() = " + imgUrlThread.isAlive());
-                            stopDownload = true;
-                            try {
-                                imgUrlThread.join();
-                                //System.out.println("Joined imgUrlthread");
-                                //System.out.println("After interrupt fetchurl " + imgUrlThread.getName());
-                                //System.out.println("imgUrlthread.isAlive() = " + imgUrlThread.isAlive());
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if(downloadImagesThread != null) {
-                            //System.out.println("Before interrupt download " + downloadImagesThread.getName());
-                            //System.out.println("downloadImagesThread.isAlive() = " + downloadImagesThread.isAlive());
-                            stopDownload = true;
-
-                            try {
-                                downloadImagesThread.join();
-                                //System.out.println("Joined downloadImagesThread");
-                                //System.out.println("After interrupt download " + downloadImagesThread.getName());
-                                //System.out.println("downloadImagesThread.isAlive() = " + downloadImagesThread.isAlive());
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        stopDownload = false;
-
-
-                        fetchImgSRCs();
-
-                        downloadImages();
+                    // Call on methods to start imgUrlThread and downloadImagesThread
+                    fetchImgSRCs();
+                    downloadImages();
 
                 }
                 else {
@@ -295,7 +287,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
             System.out.println("Starting imgUrlThread");
             System.out.println("imgUrlThread name = " + imgUrlThread.getName());
-            System.out.println("Thread name = " + Thread.currentThread().getName());
+
             try {
                 int index = 0;
                 imageURLArray = new String[20];
@@ -355,7 +347,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                 System.out.println("Starting downloadImagesThread");
                 System.out.println("downloadImagesThread name = " + downloadImagesThread.getName());
-                System.out.println("Thread name = " + Thread.currentThread().getName());
+
 
                 // Delete existing images on SD card
                 deleteExistingImgFiles();
@@ -367,20 +359,19 @@ public class LoadingImageActivity extends AppCompatActivity {
                 int counter = 0;
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
-                    //System.out.println("downloadImagesThread interrupted = " + downloadImagesThread.isInterrupted());
+
                     if(stopDownload) {
                         System.out.println("Ending downloadImagesThread gracefully...");
                         return;
                     }
                     destFilename =  "image_" + df.format(counter);
-                    //System.out.println("Downloading image from: " + imgURL);
+
 
                     destFile = new File(dir,destFilename);
 
 
                     if(downloader.downloadImage(imgURL,destFile))
                     {
-
                         System.out.println("Downloaded file: " + destFilename);
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
@@ -388,9 +379,10 @@ public class LoadingImageActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                //System.out.println("Rendering " + finalDestFilename);
-                                if(stopDownload)
+
+                                if(stopDownload) {
                                     return;
+                                }
 
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
