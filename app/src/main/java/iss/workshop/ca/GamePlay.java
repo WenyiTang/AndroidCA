@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -231,6 +232,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         tries.setText(triesStr);
 
         menu.setVisibility(View.INVISIBLE);
+
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 
     public void start(){
@@ -280,6 +283,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         ConstraintLayout endPopup = findViewById(R.id.endGame);
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
+        playSound(R.raw.finishaudio);
         congrats.setText(congratsStr);
         endPopup.setVisibility(View.VISIBLE);
     }
@@ -308,11 +312,13 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             String matchStr = getString(R.string.matches_count, matches, pictures.size());
             matchesCount.setText(matchStr);
 
+            playSound(R.raw.success_sound);
             if (matches == pictures.size()) {
                 endGame();
             }
         }
         else{
+            playSound(R.raw.wrong_select);
             turnCardBack(imageView);
         }
     }
@@ -366,6 +372,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                 System.out.println("Error while deleting file");
             }
         }
+    }
+
+    public void playSound(int soundId) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), soundId);
+        mediaPlayer.start();
     }
 
 

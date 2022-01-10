@@ -18,9 +18,10 @@ public class MusicManager {
     private static int currentMusic = -1;
     private static int previousMusic =-1;
 
-    public static float getMusicVolume(Context context){
+    /*public static float getMusicVolume(Context context){
+
         return 1.0f;
-    }
+    }*/
 
     public static void start(Context context, int music){
         start(context, music, false);
@@ -64,6 +65,7 @@ public class MusicManager {
             }
             players.put(music,mp);
             try{
+                mp.setVolume(0.3f,0.3f);
                 mp.setLooping(true);
                 mp.start();
             }
