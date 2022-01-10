@@ -229,6 +229,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                     }
                     rowAdapter.notifyDataSetChanged();
 
+                    if (rowAdapter.picturesSelected.size() != 0 && rowAdapter != null){
+                        rowAdapter.count = 0;
+                        rowAdapter.picturesSelected.clear();
+                    }
+
 //                    setAdpter();
                     //mWebView.loadUrl("about:blank");
                     //loadPage();

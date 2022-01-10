@@ -40,8 +40,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     public List<Picture> pictures;
     private Context context;
-    private List<Picture> picturesSelected;
-    int count = 0;
+    public List<Picture> picturesSelected;
+    public int count = 0;
 
 
     public RowAdapter(int[] picturesArr) {
@@ -100,29 +100,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         }
 
         public void bind(final Picture picture, final int position,Context context) {
-
-           //imageView.setImageResource(Integer.parseInt(picture.getPath()));
-
-//            Bitmap bitmap = null;
-//            String imgSrc = picture.getPath();
-//            try {
-//                bitmap = Glide.with(context)
-//                        .asBitmap()
-//                        .load(imgSrc)
-//                        .submit()
-//                        .get();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            // back to main thread
-//            Bitmap finalBitmap = bitmap;
-//
-//            imageView.setImageBitmap(finalBitmap);
-
-            //mageView.setBackgroundResource(Integer.parseInt(picture.getPath()));
 
             if (picture.getBitmap() == null){
 
