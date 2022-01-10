@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button startBtn;
     private Button guideBtn;
+    private Button leaderboardBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         guideBtn = findViewById(R.id.guideBtn);
         guideBtn.setOnClickListener(this);
 
+        leaderboardBtn = findViewById(R.id.leaderboardBtn);
+        leaderboardBtn.setOnClickListener(this);
+
     }
 
     @Override
@@ -42,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(view == guideBtn){
             Intent intent = new Intent(this, Guide.class);
+            startActivity(intent);
+        }
+        else if (view == leaderboardBtn) {
+            Intent intent = new Intent(this, Leaderboard.class);
             startActivity(intent);
         }
     }

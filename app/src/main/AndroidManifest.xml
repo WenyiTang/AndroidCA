@@ -14,6 +14,9 @@
         android:theme="@style/Theme.CA"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Leaderboard"
+            android:exported="false" />
+        <activity
             android:name=".Guide"
             android:exported="false" />
         <activity
@@ -28,6 +31,7 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
