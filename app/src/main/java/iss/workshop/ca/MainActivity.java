@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button startBtn;
     private Button guideBtn;
+    private Button settingBtn;
 
     public static boolean continueMusic;
 
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         guideBtn = findViewById(R.id.guideBtn);
         guideBtn.setOnClickListener(this);
 
+        settingBtn = findViewById(R.id.settingBtn);
+        settingBtn.setOnClickListener(this);
+
     }
 
     @Override
@@ -44,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(view == guideBtn){
             Intent intent = new Intent(this, Guide.class);
+            startActivity(intent);
+        }
+
+        else if(view == settingBtn){
+            Intent intent = new Intent(this, SettingPage.class);
             startActivity(intent);
         }
     }

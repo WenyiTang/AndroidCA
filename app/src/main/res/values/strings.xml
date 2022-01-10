@@ -1,18 +1,19 @@
 <resources>
     <string name="app_name">CA</string>
-<!--General-->
+    <!--General-->
 
-<!--Main Menu-->
+    <!--Main Menu-->
     <string name="play_btn">Play</string>
     <string name="guide_btn">Guide</string>
+    <string name="setting_btn">Setting</string>
 
-<!--Guide-->
+    <!--Guide-->
     <string name="guide_header">GUIDE</string>
     <string name="guide">"Hi! Welcome to our Memory Game!\n\nHere are the rules.Upon clicking on \"Start Game\", a search bar will be shown. Input a URL and search for images.From the URL, 20 images will be downloaded.\n\nAfter all images have been downloaded, select 6 images to be your playing cards, and press \"Play\" to start game play.Before pressing play, you can still change the URL to search for a new set of images. \n\nUpon pressing play, a playing grid will be shown with all cards facing down.Click on a card to flip it over. Click on another to find a match.If it is a match, the card stays facing up, otherwise, the card flips back.\n\nThe timer starts immediately once the playing grid loads, and ends when all pairs of cards are found."
     </string>
 
 
-<!--Gameplay-->
+    <!--Gameplay-->
     <string name="menu_btn">Menu</string>
     <string name="game_paused">Game Paused</string>
     <string name="resume_btn">Resume</string>
@@ -24,4 +25,20 @@
     <string name="congrats">"CONGRATULATIONS!\n\n You found \n %1$d matches \nin %2$s \nwith %3$d tries."</string>
     <string name="tries_count">Tries: %1$d</string>
     <string name="timer">Time: </string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

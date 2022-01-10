@@ -1,6 +1,7 @@
 package iss.workshop.ca;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -18,10 +19,12 @@ public class MusicManager {
     private static int currentMusic = -1;
     private static int previousMusic =-1;
 
-    /*public static float getMusicVolume(Context context){
-
-        return 1.0f;
-    }*/
+    public static float getMusicVolume(Context context){
+        /*SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        float volume = sharedPreferences.getFloat("volume",1f);*/
+        float volume = 1f;
+        return volume;
+    }
 
     public static void start(Context context, int music){
         start(context, music, false);
@@ -65,7 +68,7 @@ public class MusicManager {
             }
             players.put(music,mp);
             try{
-                mp.setVolume(0.3f,0.3f);
+                mp.setVolume(getMusicVolume(context),getMusicVolume(context));
                 mp.setLooping(true);
                 mp.start();
             }
