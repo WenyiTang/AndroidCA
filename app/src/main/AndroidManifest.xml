@@ -14,9 +14,6 @@
         android:theme="@style/Theme.CA"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Leaderboard"
-            android:exported="false" />
-        <activity
             android:name=".Guide"
             android:exported="false" />
         <activity

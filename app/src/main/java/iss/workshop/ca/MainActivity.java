@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button startBtn, guideBtn, normalBtn, hardBtn, cancelBtn, leaderboardBtn;
+    private Button startBtn, guideBtn, normalBtn, hardBtn, cancelBtn;
     private ConstraintLayout diffMenu;
 
     @Override
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         normalBtn = findViewById(R.id.normalBtn);
                         hardBtn = findViewById(R.id.hardBtn);
                         cancelBtn = findViewById(R.id.cancel_diff);
-                        leaderboardBtn = findViewById(R.id.leaderboardBtn);
+
                         initElements();
                     }
                 });
@@ -103,10 +103,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startBtn.setEnabled(true);
             guideBtn.setEnabled(true);
         }
-        if (view == leaderboardBtn) {
-            Intent intent = new Intent(this, Leaderboard.class);
-            startActivity(intent);
-        }
     }
 
     private void initElements() {
@@ -124,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (cancelBtn != null) {
             cancelBtn.setOnClickListener(this);
-        }
-        if (leaderboardBtn != null) {
-          leaderboardBtn.setOnClickListener(this);
         }
     }
 }
