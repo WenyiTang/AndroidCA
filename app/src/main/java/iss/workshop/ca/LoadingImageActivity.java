@@ -96,7 +96,6 @@ public class LoadingImageActivity extends AppCompatActivity {
             Picture picture = new Picture(String.valueOf(imageId));
             pictures.add(picture);
         }
-
     }
 
 
@@ -128,7 +127,6 @@ public class LoadingImageActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(rowAdapter);
-
     }
 
     private void setNextBtn(){
@@ -164,27 +162,6 @@ public class LoadingImageActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
     }
 
-
-    private void setDownloadBtn(){
-        downloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int[] newdataArr = {R.drawable.afraid};
-                for (int i = 0; i < newdataArr.length;i++){
-                int imageId = newdataArr[i];
-                Picture picture = new Picture(String.valueOf(imageId));
-                onePictureDownloadSuccess(picture);
-         }
-
-            }
-        });
-    }
-
-
-
-
-
     private void setProgressBarBycheckDownloadPictureNumber(){
 
         if (rowAdapter.pictures != null){
@@ -217,7 +194,6 @@ public class LoadingImageActivity extends AppCompatActivity {
             animator.start();
 
         }
-
     }
 
 
@@ -226,8 +202,6 @@ public class LoadingImageActivity extends AppCompatActivity {
         rowAdapter.pictures.add(picture);
         setProgressBarBycheckDownloadPictureNumber();
         rowAdapter.notifyDataSetChanged();
-
-
     }
 
     //Daniel's methods start here
@@ -252,11 +226,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_LONG).show();
                 }
-
-
             }
         });
     }
+
+
     public void fetchImgSRCs(){
         System.out.println("Executing fetchImgSRCs");
         imgUrlThread = new Thread(() -> {
@@ -282,16 +256,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                         index++;
                     }
                 }
-
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
         imgUrlThread.start();
-
-
     }
 
 
@@ -340,22 +309,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 System.out.println("Rendering " + finalDestFilename);
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(picture);
-
                             }
                         });
-
-
-
                     }
-
                 }
-
-
             }
-
         });
         downloadImagesThread.start();
-
     }
 
     private void deleteExistingImgFiles(){
@@ -376,7 +336,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                 System.out.println("Error while deleting file");
             }
         }
-
     }
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
@@ -411,7 +370,4 @@ public class LoadingImageActivity extends AppCompatActivity {
         }
         return;
     }
-
-
-
 }
