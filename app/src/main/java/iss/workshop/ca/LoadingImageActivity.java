@@ -232,10 +232,12 @@ public class LoadingImageActivity extends AppCompatActivity {
 //                    setAdpter();
                     //mWebView.loadUrl("about:blank");
                     //loadPage();
+                    //clearPicturesFromRowAdapter();
                     fetchImgSRCs();
                     downloadImages();
                     fetchClick++;
                     if(fetchClick >= 2){
+
                         if(downloadImagesThread != null){
                             downloadImagesThread.interrupt();
                         }
@@ -257,6 +259,8 @@ public class LoadingImageActivity extends AppCompatActivity {
             }
         });
     }
+
+
     public void fetchImgSRCs(){
         System.out.println("Executing fetchImgSRCs");
         imgUrlThread = new Thread(() -> {
