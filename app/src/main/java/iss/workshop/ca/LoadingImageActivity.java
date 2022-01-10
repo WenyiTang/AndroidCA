@@ -216,7 +216,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 System.out.println("External URL = " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
                     mWebView.loadUrl("about:blank");
-                    Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_SHORT).show();
 
                     progressBar.setVisibility(View.VISIBLE);
                     downloading.setVisibility(View.VISIBLE);
@@ -238,6 +238,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                     downloadImages();
                     fetchClick++;
                     if(fetchClick >= 2){
+                        if(fetchClick % 2 == 0)
+                            externalUrl = "https://stocksnap.io/search/cats";
+                        else
+                            externalUrl = "https://stocksnap.io/search/dogs";
+
 
                         if(downloadImagesThread != null){
                             System.out.println("Interrupt download");
@@ -254,6 +259,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         }
 
                         rowAdapter.notifyDataSetChanged();
+
                         Toast.makeText(LoadingImageActivity.this, "re-downloading images", Toast.LENGTH_SHORT).show();
                         fetchImgSRCs();
                         downloadImages();
@@ -262,7 +268,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 else {
                     progressBar.setVisibility(View.INVISIBLE);
                     downloading.setVisibility(View.INVISIBLE);
-                    Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_SHORT).show();
                 }
 
 
