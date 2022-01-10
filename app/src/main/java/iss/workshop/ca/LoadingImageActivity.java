@@ -67,7 +67,12 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
 
+
+    private int difficulty = 0;
+    private TextView selectInstruct;
+
     protected int RequireSelectedSize = 6;
+
 
     Thread thread;
     private int fetchClick = 0;
@@ -78,6 +83,7 @@ public class LoadingImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_image);
 
+        getDifficulty();
         getLayoutWidget();
         setFetchBtnListener();//from Daniel
         setNextBtn();
@@ -101,19 +107,22 @@ public class LoadingImageActivity extends AppCompatActivity {
         //initPictureData();
         layoutManager = new GridLayoutManager(this,4);
         recyclerView.setLayoutManager(layoutManager);
-        rowAdapter = new RowAdapter(this, pictures, new RowAdapter.ItemSelectedChangeListener() {
+        rowAdapter = new RowAdapter(this, pictures, difficulty, new RowAdapter.ItemSelectedChangeListener() {
             @Override
             public void onItemSelectedChange(int number) {
                 if (number > 0) {
                     //check how many images are currently selected
                     System.out.println("current have pictures count: " + number);
 
-                    if (number == RequireSelectedSize){
+
+                    if (number == difficulty){
 
                         nextBtn.setVisibility(View.VISIBLE);
+                        selectInstruct.setVisibility(View.INVISIBLE);
 
                     }else {
                         nextBtn.setVisibility(View.INVISIBLE);
+                        selectInstruct.setVisibility(View.VISIBLE);
                     }
 
                 } else {
@@ -152,6 +161,7 @@ public class LoadingImageActivity extends AppCompatActivity {
         downloading = findViewById(R.id.DownloadText);
         downloaded =findViewById(R.id.Downloaded);
         mWebView = findViewById(R.id.web_view);
+        selectInstruct = findViewById(R.id.selectInstruct);
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -173,6 +183,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                         int progress = (index + 1) * 5;
                         progressBar.setProgress(progress);
+                        selectInstruct.setText("Please select " + difficulty + " images");
 
                         if(progress == 100){
                             progressBar.setVisibility(View.INVISIBLE);
@@ -181,11 +192,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                             String downloadedStr = getString(R.string.Downloaded,pictures.size());
                             downloaded.setText(downloadedStr);
                             downloaded.setVisibility(View.VISIBLE);
+                            selectInstruct.setVisibility(View.VISIBLE);
                         }
                         else{
                             progressBar.setVisibility(View.VISIBLE);
                             downloading.setVisibility(View.VISIBLE);
                             downloaded.setVisibility(View.INVISIBLE);
+                            selectInstruct.setVisibility(View.INVISIBLE);
                             //progressBar.setProgress(progress);
                         }
                     }
@@ -400,6 +413,17 @@ public class LoadingImageActivity extends AppCompatActivity {
         return processedPics;
     }
 
+    private void getDifficulty() {
+        Intent intent = getIntent();
+        String diff = intent.getStringExtra("diff");
+        if (diff.equals("normal")) {
+            difficulty = 6;
+        };
+        if (diff.equals("hard")) {
+            difficulty = 8;
+        }
+        return;
+    }
 
 
 

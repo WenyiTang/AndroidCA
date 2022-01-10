@@ -50,10 +50,11 @@
     <GridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="550dp"
         android:horizontalSpacing="12dp"
         android:numColumns="4"
         android:verticalSpacing="12dp"
+        app:flow_verticalGap="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timer" />
 
