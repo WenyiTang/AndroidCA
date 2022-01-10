@@ -41,6 +41,7 @@ import java.util.ArrayList;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class LoadingImageActivity extends AppCompatActivity {
 
@@ -244,6 +245,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                         if(imgUrlThread != null) {
                             imgUrlThread.interrupt();
                         }
+                        rowAdapter.pictures.clear();//clear previous images
+                        for (int i = 0; i < 20;i++){
+                            Picture picture = new Picture();
+                            rowAdapter.pictures.add(picture);
+                        }
+
+                        rowAdapter.notifyDataSetChanged();
                         Toast.makeText(LoadingImageActivity.this, "re-downloading images", Toast.LENGTH_SHORT).show();
                         fetchImgSRCs();
                         downloadImages();
