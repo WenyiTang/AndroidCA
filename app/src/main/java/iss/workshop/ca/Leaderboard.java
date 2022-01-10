@@ -2,8 +2,11 @@ package iss.workshop.ca;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.time.Duration;
@@ -16,8 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Leaderboard extends AppCompatActivity {
+public class Leaderboard extends AppCompatActivity implements View.OnClickListener{
 
+    private Button returnBtn;
     private int[] topAttempts = new int[5];
     private String[] topTime = new String[5];
     private int mostRecentAttempts;
@@ -47,6 +51,9 @@ public class Leaderboard extends AppCompatActivity {
         if (scoreListView != null) {
             scoreListView.setAdapter(scoreAdapter);
         }
+
+        returnBtn = findViewById(R.id.returnBtn);
+        returnBtn.setOnClickListener(this);
     }
 
     private void retrieveTopFiveScores(SharedPreferences pref) {
@@ -134,6 +141,15 @@ public class Leaderboard extends AppCompatActivity {
         editor.remove("attemptsNew");
         editor.remove("timeTakenNew");
         editor.commit();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == returnBtn) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     /*
