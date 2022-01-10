@@ -67,6 +67,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private String[] imageURLArray;
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
+    private volatile boolean stopDownload = false;
 
 
     private int fetchClick = 0;
@@ -197,7 +198,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     public void onePictureDownloadSuccess(int index,Picture picture){
 
-        System.out.println("currentIndex :" + index);
+        //System.out.println("currentIndex :" + index);
         rowAdapter.pictures.set(index,picture);
         setProgressBarBycheckDownloadPictureNumber(index);
         rowAdapter.notifyDataSetChanged();
@@ -212,6 +213,15 @@ public class LoadingImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard(LoadingImageActivity.this);
+                if(fetchClick % 2 == 0) {
+
+                    urlInput.setText("stocksnap.io/search/cats");
+
+                }
+                else {
+
+                    urlInput.setText("stocksnap.io/search/dogs");
+                }
                 externalUrl ="https://" + urlInput.getText().toString();
                 System.out.println("External URL = " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
@@ -230,46 +240,41 @@ public class LoadingImageActivity extends AppCompatActivity {
                     }
                     rowAdapter.notifyDataSetChanged();
 
-//                    setAdpter();
-                    //mWebView.loadUrl("about:blank");
-                    //loadPage();
-                    //clearPicturesFromRowAdapter();
-                    fetchImgSRCs();
-                    downloadImages();
                     fetchClick++;
-                    if(fetchClick >= 2){
-                        if(fetchClick % 2 == 0) {
-                            externalUrl = "https://stocksnap.io/search/cats";
-                            urlInput.setText("stocksnap.io/search/cats");
 
-                        }
-                        else {
-                            externalUrl = "https://stocksnap.io";
-                            urlInput.setText("stocksnap.io");
-                        }
-
-
-
-                        if(downloadImagesThread != null){
-                            System.out.println("Interrupt download");
-                            downloadImagesThread.interrupt();
-                        }
                         if(imgUrlThread != null) {
-                            System.out.println("Interrupt fetchurl");
+                           // System.out.println("Before interrupt fetchurl " + imgUrlThread.getName());
+                            //System.out.println("imgUrlthread.isAlive() = " + imgUrlThread.isAlive());
                             imgUrlThread.interrupt();
+                            try {
+                                imgUrlThread.join();
+                                //System.out.println("Joined imgUrlthread");
+                                //System.out.println("After interrupt fetchurl " + imgUrlThread.getName());
+                                //System.out.println("imgUrlthread.isAlive() = " + imgUrlThread.isAlive());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        rowAdapter.pictures.clear();//clear previous images
-                        for (int i = 0; i < 20;i++){
-                            Picture picture = new Picture();
-                            rowAdapter.pictures.add(picture);
+                        if(downloadImagesThread != null) {
+                            //System.out.println("Before interrupt download " + downloadImagesThread.getName());
+                            //System.out.println("downloadImagesThread.isAlive() = " + downloadImagesThread.isAlive());
+                            stopDownload = true;
+                            downloadImagesThread.interrupt();
+                            try {
+                                downloadImagesThread.join();
+                                //System.out.println("Joined downloadImagesThread");
+                                //System.out.println("After interrupt download " + downloadImagesThread.getName());
+                                //System.out.println("downloadImagesThread.isAlive() = " + downloadImagesThread.isAlive());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        rowAdapter.notifyDataSetChanged();
 
-                        Toast.makeText(LoadingImageActivity.this, "re-downloading images", Toast.LENGTH_SHORT).show();
                         fetchImgSRCs();
+                        stopDownload = false;
                         downloadImages();
-                    }
+
                 }
                 else {
                     progressBar.setVisibility(View.INVISIBLE);
@@ -284,8 +289,12 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
     public void fetchImgSRCs(){
-        System.out.println("Executing fetchImgSRCs");
+        /*System.out.println("Executing fetchImgSRCs");*/
         imgUrlThread = new Thread(() -> {
+
+            System.out.println("Starting imgUrlThread");
+            System.out.println("imgUrlThread name = " + imgUrlThread.getName());
+            System.out.println("Thread name = " + Thread.currentThread().getName());
             try {
                 int index = 0;
                 imageURLArray = new String[20];
@@ -294,6 +303,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                 // get all <img> tags from http response
                 Elements elements = document.select("img");
                 for (Element element : elements) {
+                    //System.out.println("imgUrlThread interrupted = " + imgUrlThread.isInterrupted());
+                    if(Thread.interrupted()) {
+                        System.out.println("Ending imgUrlThread gracefully...");
+                        return;
+                    }
                     // determine whether there is a correct image
                     String imgSrc = element.attr("src");
 
@@ -303,7 +317,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         if (index >= 20) {
                             break;
                         }
-                        System.out.println(imgSrc);
+                        //System.out.println(imgSrc);
                         imageURLArray[index] = imgSrc;
                         index++;
                     }
@@ -323,9 +337,10 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
     public void downloadImages() {
-        System.out.println("Executing downloadImages()...");
+        //System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
         try {
+
             imgUrlThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -336,7 +351,10 @@ public class LoadingImageActivity extends AppCompatActivity {
         downloadImagesThread =  new Thread (new Runnable() {
             @Override
             public void run() {
-                System.out.println("entering new thread");
+
+                System.out.println("Starting downloadImagesThread");
+                System.out.println("downloadImagesThread name = " + downloadImagesThread.getName());
+                System.out.println("Thread name = " + Thread.currentThread().getName());
 
                 // Delete existing images on SD card
                 deleteExistingImgFiles();
@@ -348,14 +366,20 @@ public class LoadingImageActivity extends AppCompatActivity {
                 int counter = 0;
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
+                    //System.out.println("downloadImagesThread interrupted = " + downloadImagesThread.isInterrupted());
+                    if(Thread.interrupted() || stopDownload) {
+                        System.out.println("Ending downloadImagesThread gracefully...");
+                        return;
+                    }
                     destFilename =  "image_" + df.format(counter);
-                    System.out.println("Downloading image from: " + imgURL);
+                    //System.out.println("Downloading image from: " + imgURL);
 
                     destFile = new File(dir,destFilename);
 
 
                     if(downloader.downloadImage(imgURL,destFile))
                     {
+
                         System.out.println("Downloaded file: " + destFilename);
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
@@ -363,7 +387,8 @@ public class LoadingImageActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                System.out.println("Rendering " + finalDestFilename);
+                                //System.out.println("Rendering " + finalDestFilename);
+
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
 
@@ -391,15 +416,15 @@ public class LoadingImageActivity extends AppCompatActivity {
         for(File file : existingFiles) {
             try{
                 if(file.exists()) {
-                    System.out.print("Deleting file : " + file.getName());
+                    //System.out.print("Deleting file : " + file.getName());
                     boolean result = file.delete();
                     if(result) {
-                        System.out.println(", successful");
+                        //System.out.println(", successful");
                     }
                 }
             }
             catch (Exception e) {
-                System.out.println("Error while deleting file");
+                //System.out.println("Error while deleting file");
             }
         }
 
