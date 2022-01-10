@@ -245,7 +245,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         if(imgUrlThread != null) {
                            // System.out.println("Before interrupt fetchurl " + imgUrlThread.getName());
                             //System.out.println("imgUrlthread.isAlive() = " + imgUrlThread.isAlive());
-                            imgUrlThread.interrupt();
+                            stopDownload = true;
                             try {
                                 imgUrlThread.join();
                                 //System.out.println("Joined imgUrlthread");
@@ -259,7 +259,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                             //System.out.println("Before interrupt download " + downloadImagesThread.getName());
                             //System.out.println("downloadImagesThread.isAlive() = " + downloadImagesThread.isAlive());
                             stopDownload = true;
-                            downloadImagesThread.interrupt();
+
                             try {
                                 downloadImagesThread.join();
                                 //System.out.println("Joined downloadImagesThread");
@@ -269,10 +269,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
+                        stopDownload = false;
 
 
                         fetchImgSRCs();
-                        stopDownload = false;
+
                         downloadImages();
 
                 }
@@ -304,7 +305,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 Elements elements = document.select("img");
                 for (Element element : elements) {
                     //System.out.println("imgUrlThread interrupted = " + imgUrlThread.isInterrupted());
-                    if(Thread.interrupted()) {
+                    if(stopDownload) {
                         System.out.println("Ending imgUrlThread gracefully...");
                         return;
                     }
@@ -367,7 +368,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
                     //System.out.println("downloadImagesThread interrupted = " + downloadImagesThread.isInterrupted());
-                    if(Thread.interrupted() || stopDownload) {
+                    if(stopDownload) {
                         System.out.println("Ending downloadImagesThread gracefully...");
                         return;
                     }
@@ -388,6 +389,8 @@ public class LoadingImageActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 //System.out.println("Rendering " + finalDestFilename);
+                                if(stopDownload)
+                                    return;
 
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
