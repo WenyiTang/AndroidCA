@@ -79,8 +79,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             diffMenu.setEnabled(true);
             startBtn.setVisibility(View.INVISIBLE);
             guideBtn.setVisibility(View.INVISIBLE);
+            leaderboardBtn.setVisibility(View.INVISIBLE);
             startBtn.setEnabled(false);
             guideBtn.setEnabled(false);
+            leaderboardBtn.setEnabled(false);
 
         }
         if(view == guideBtn){
@@ -107,8 +109,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             diffMenu.setEnabled(false);
             startBtn.setVisibility(View.VISIBLE);
             guideBtn.setVisibility(View.VISIBLE);
+            leaderboardBtn.setVisibility(View.VISIBLE);
             startBtn.setEnabled(true);
             guideBtn.setEnabled(true);
+            leaderboardBtn.setEnabled(true);
         }
     }
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (cancelBtn != null) {
             cancelBtn.setOnClickListener(this);
         }
-        if (leaderBoard != null) {
+        if (leaderboardBtn != null) {
             leaderboardBtn.setOnClickListener(this);
         }
     }
