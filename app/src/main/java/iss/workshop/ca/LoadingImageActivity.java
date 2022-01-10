@@ -223,7 +223,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     urlInput.setText("stocksnap.io/search/dogs");
                 }
                 externalUrl ="https://" + urlInput.getText().toString();
-                System.out.println("External URL = " + externalUrl);
+                System.out.println("Grab images from " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
                     mWebView.loadUrl("about:blank");
                     Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_SHORT).show();
@@ -245,6 +245,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         if(imgUrlThread != null) {
                            // System.out.println("Before interrupt fetchurl " + imgUrlThread.getName());
                             //System.out.println("imgUrlthread.isAlive() = " + imgUrlThread.isAlive());
+                            System.out.println("Interrupt imgUrlThread");
                             imgUrlThread.interrupt();
                             try {
                                 imgUrlThread.join();
@@ -258,7 +259,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         if(downloadImagesThread != null) {
                             //System.out.println("Before interrupt download " + downloadImagesThread.getName());
                             //System.out.println("downloadImagesThread.isAlive() = " + downloadImagesThread.isAlive());
-                            stopDownload = true;
+                            System.out.println("Interrupt downloadImagesThread");
                             downloadImagesThread.interrupt();
                             try {
                                 downloadImagesThread.join();
@@ -367,8 +368,8 @@ public class LoadingImageActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
                     //System.out.println("downloadImagesThread interrupted = " + downloadImagesThread.isInterrupted());
-                    if(Thread.interrupted() || stopDownload) {
-                        System.out.println("Ending downloadImagesThread gracefully...");
+                    if(Thread.interrupted()) {
+                        System.out.println("Aborting download...");
                         return;
                     }
                     destFilename =  "image_" + df.format(counter);
