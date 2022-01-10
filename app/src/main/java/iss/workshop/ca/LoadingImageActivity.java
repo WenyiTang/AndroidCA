@@ -177,9 +177,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                 onePictureDownloadSuccess(picture);
          }
 
-            }
-        });
-    }
 
 
 
@@ -187,12 +184,14 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     private void setProgressBarBycheckDownloadPictureNumber(){
 
-        if (rowAdapter.pictures != null){
-
-            ValueAnimator animator = ValueAnimator.ofInt(0, 100);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+                    if(rowAdapter.pictures.get(index).getBitmap() != null){
+                TextView downloading = findViewById(R.id.DownloadText);
+                String downloadStr = getString(R.string.DownloadText, index,pictures.size());
+                downloading.setText(downloadStr);
+                ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
 
                     int progress = rowAdapter.pictures.size() * 5;
                     progressBar.setProgress(progress);
@@ -200,6 +199,9 @@ public class LoadingImageActivity extends AppCompatActivity {
                     if(progress == 100){
                         progressBar.setVisibility(View.INVISIBLE);
                         downloading.setVisibility(View.INVISIBLE);
+                        TextView downloaded = findViewById(R.id.Downloaded);
+                        String downloadedStr = getString(R.string.Downloaded,pictures.size());
+                        downloaded.setText(downloadedStr);
                         downloaded.setVisibility(View.VISIBLE);
                         selectInstruct.setVisibility(View.VISIBLE);
                     }
