@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -262,6 +263,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
+        playSound(R.raw.finishaudio);
         endPopup.setVisibility(View.VISIBLE);
     }
 
@@ -288,12 +290,13 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
             String matchStr = getString(R.string.matches_count, matches, pictures.size());
             matchesCount.setText(matchStr);
-
+            playSound(R.raw.success_sound);
             if (matches == pictures.size()) {
                 endGame();
             }
         }
         else{
+            playSound(R.raw.wrong_select);
             turnCardBack(imageView);
         }
     }
@@ -369,6 +372,11 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         SortScore sorter = new SortScore();
         sorter.updateScoreboard(pref);
+    }
+
+    public void playSound(int soundId) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), soundId);
+        mediaPlayer.start();
     }
 //
 //        SortScore sorter = new SortScore();
