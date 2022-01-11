@@ -41,6 +41,7 @@ import java.util.ArrayList;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class LoadingImageActivity extends AppCompatActivity {
 
@@ -58,14 +59,15 @@ public class LoadingImageActivity extends AppCompatActivity {
     private TextView downloading;
     private TextView downloaded;
 
-    //Daniel
+
     private EditText urlInput;
     private String externalUrl;
-    private WebView mWebView;
-    private String imageURLs;
     private String[] imageURLArray;
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
+    private volatile boolean stopDownload = false;
+
+
 
 
     private int difficulty = 0;
@@ -75,6 +77,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
     Thread thread;
+
     private int fetchClick = 0;
 
 
@@ -163,8 +166,6 @@ public class LoadingImageActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.web_view);
         selectInstruct = findViewById(R.id.selectInstruct);
 
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
     }
 
 
@@ -174,7 +175,8 @@ public class LoadingImageActivity extends AppCompatActivity {
 
             if(rowAdapter.pictures.get(index).getBitmap() != null){
                 TextView downloading = findViewById(R.id.DownloadText);
-                String downloadStr = getString(R.string.DownloadText, index,pictures.size());
+                int imageNum = index +1 ;
+                String downloadStr = getString(R.string.DownloadText, imageNum,pictures.size());
                 downloading.setText(downloadStr);
                 ValueAnimator animator = ValueAnimator.ofInt(0, 100);
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -216,7 +218,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     public void onePictureDownloadSuccess(int index,Picture picture){
 
-        System.out.println("currentIndex :" + index);
+        //System.out.println("currentIndex :" + index);
         rowAdapter.pictures.set(index,picture);
         setProgressBarBycheckDownloadPictureNumber(index);
         rowAdapter.notifyDataSetChanged();
@@ -224,24 +226,56 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     }
 
-    //Daniel's methods start here
-
     private void setFetchBtnListener() {
         downloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard(LoadingImageActivity.this);
+
+                // FOR DEMO
+                /*fetchClick++;
+                if(fetchClick % 2 == 0) {
+                    urlInput.setText("stocksnap.io/search/cats");
+                }
+                else {
+                    urlInput.setText("stocksnap.io/search/dogs");
+                }*/
+
+
                 externalUrl ="https://" + urlInput.getText().toString();
-                System.out.println("External URL = " + externalUrl);
+                System.out.println("Get images from " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
-                    mWebView.loadUrl("about:blank");
-                    Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_LONG).show();
+
+                    Toast.makeText(LoadingImageActivity.this, "Beginning download...", Toast.LENGTH_SHORT).show();
 
                     progressBar.setVisibility(View.VISIBLE);
                     downloading.setVisibility(View.VISIBLE);
                     downloaded.setVisibility(View.INVISIBLE);
 
-                    //clear previous images and reset the default image
+
+
+                    // Stop imgUrlThread and downloadImagesThread
+                    stopDownload = true;
+
+                    // Ensure that imgUrlThread has terminated
+                    if (imgUrlThread != null) {
+                        try {
+                            imgUrlThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Ensure that downloadImagesThread has terminated
+                    if (downloadImagesThread != null) {
+                        try {
+                            downloadImagesThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Clear images from view
                     rowAdapter.pictures.clear();//clear previous images
                     for (int i = 0; i < 20;i++){
                         Picture picture = new Picture();
@@ -249,30 +283,40 @@ public class LoadingImageActivity extends AppCompatActivity {
                     }
                     rowAdapter.notifyDataSetChanged();
 
+
                     if (rowAdapter.picturesSelected.size() != 0 && rowAdapter != null){
                         rowAdapter.count = 0;
                         rowAdapter.picturesSelected.clear();
                     }
 
-//                    setAdpter();
-                    //mWebView.loadUrl("about:blank");
-                    //loadPage();
+
+                    // Allow imgUrlThread and downloadImagesThread to execute
+                    stopDownload = false;
+
+                    // Call on methods to start imgUrlThread and downloadImagesThread
                     fetchImgSRCs();
                     downloadImages();
+
                 }
                 else {
+                    System.out.println(externalUrl + " is an invalid web URL. Aborting...");
                     progressBar.setVisibility(View.INVISIBLE);
                     downloading.setVisibility(View.INVISIBLE);
-                    Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoadingImageActivity.this,"URL invalid",Toast.LENGTH_SHORT).show();
                 }
 
 
             }
         });
     }
+
+
     public void fetchImgSRCs(){
-        System.out.println("Executing fetchImgSRCs");
         imgUrlThread = new Thread(() -> {
+
+            System.out.println("Starting imgUrlThread");
+            //System.out.println("imgUrlThread name = " + imgUrlThread.getName());
+
             try {
                 int index = 0;
                 imageURLArray = new String[20];
@@ -281,6 +325,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                 // get all <img> tags from http response
                 Elements elements = document.select("img");
                 for (Element element : elements) {
+                    //System.out.println("imgUrlThread interrupted = " + imgUrlThread.isInterrupted());
+                    if(stopDownload) {
+                        System.out.println("Ending imgUrlThread...");
+                        return;
+                    }
                     // determine whether there is a correct image
                     String imgSrc = element.attr("src");
 
@@ -290,7 +339,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         if (index >= 20) {
                             break;
                         }
-                        System.out.println(imgSrc);
+                        //System.out.println(imgSrc);
                         imageURLArray[index] = imgSrc;
                         index++;
                     }
@@ -310,9 +359,10 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
     public void downloadImages() {
-        System.out.println("Executing downloadImages()...");
+        //System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
         try {
+
             imgUrlThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -323,7 +373,10 @@ public class LoadingImageActivity extends AppCompatActivity {
         downloadImagesThread =  new Thread (new Runnable() {
             @Override
             public void run() {
-                System.out.println("entering new thread");
+
+                System.out.println("Starting downloadImagesThread");
+                //System.out.println("downloadImagesThread name = " + downloadImagesThread.getName());
+
 
                 // Delete existing images on SD card
                 deleteExistingImgFiles();
@@ -335,8 +388,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                 int counter = 0;
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
+
+                    if(stopDownload) {
+                        System.out.println("Aborting download...");
+                        return;
+                    }
                     destFilename =  "image_" + df.format(counter);
-                    System.out.println("Downloading image from: " + imgURL);
+
 
                     destFile = new File(dir,destFilename);
 
@@ -350,7 +408,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                System.out.println("Rendering " + finalDestFilename);
+
+                                if(stopDownload) {
+                                    return;
+                                }
+
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
 
@@ -378,15 +440,15 @@ public class LoadingImageActivity extends AppCompatActivity {
         for(File file : existingFiles) {
             try{
                 if(file.exists()) {
-                    System.out.print("Deleting file : " + file.getName());
+                    //System.out.print("Deleting file : " + file.getName());
                     boolean result = file.delete();
                     if(result) {
-                        System.out.println(", successful");
+                        //System.out.println(", successful");
                     }
                 }
             }
             catch (Exception e) {
-                System.out.println("Error while deleting file");
+                //System.out.println("Error while deleting file");
             }
         }
 

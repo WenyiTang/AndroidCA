@@ -58,6 +58,7 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         returnBtn.setOnClickListener(this);
         clearBtn = findViewById(R.id.clearBtn);
         clearBtn.setOnClickListener(this);
+
         normalHistory = findViewById(R.id.normalHistory);
         normalHistory.setOnClickListener(this);
         hardHistory = findViewById(R.id.hardHistory);
@@ -108,9 +109,11 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
     }
     */
 
+
     public void resetLeaderboard(String scoresMode){
 
         SharedPreferences pref = getSharedPreferences(scoresMode, MODE_PRIVATE);
+
         SharedPreferences.Editor editor = pref.edit();
 
         for (int j = 0; j < numOfRanks; j++){
@@ -125,6 +128,7 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(this, Leaderboard.class);
         intent.putExtra("diff", scoresMode);
         startActivity(intent);
+
         finish();
         overridePendingTransition(0,0);
     }

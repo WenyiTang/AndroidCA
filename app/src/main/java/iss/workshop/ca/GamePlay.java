@@ -28,15 +28,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class GamePlay extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener{
-//    private String[] img = {
-//            "afraid", "full", "hug", "laugh", "peep", "snore"
-//    };
 
     private ArrayList<Picture> pictures = new ArrayList<>();
 
-//    private String[] imgs = new String[img.length * 2];
-//    private String[] pics = new String[pictures.size() * 2];
-//    private ArrayList<String> pics;
     private String[] cardflipped = new String[2];
     private ImageView[] imgflipped = new ImageView[2];
     private boolean ready = false;
@@ -102,7 +96,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //pics = populateImgs(picId);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -148,26 +141,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         tries.setText(triesStr);
     }
 
-//    private void populateImgs(String[] img, String[] imgs){
-//        List<String> shuffledList = new ArrayList<>();
-//        for (String s : img){
-//            shuffledList.add(s);
-//            shuffledList.add(s);
-//        }
-//        Collections.shuffle(shuffledList);
-//        shuffledList.toArray(imgs);
-//    }
-
-//    private void populateImgs(ArrayList<String> picId, String[] pics){
-//        List<String> shuffledList = new ArrayList<>();
-//        for (String s : picId){
-//            shuffledList.add(s);
-//            shuffledList.add(s);
-//        }
-//        Collections.shuffle(shuffledList);
-//        shuffledList.toArray(pics);
-//    }
-
     private ArrayList<String> populateImgs(ArrayList<String> picId){
         ArrayList<String> shuffledList = new ArrayList<>();
         for (String s : picId){
@@ -196,10 +169,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         }
 
         if (view == playAgainBtn){
-//            Intent intent = new Intent(this, LoadingImageActivity.class);
-//            startActivity(intent);
-//            finish();
-//            overridePendingTransition(0,0);
             restartGame();
             endPopup.setVisibility(View.INVISIBLE);
         }
@@ -402,4 +371,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         sorter.updateScoreboard(pref);
     }
 
+        SortScore sorter = new SortScore();
+        sorter.updateScoreboard(pref);
+    }
 }
