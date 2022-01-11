@@ -440,10 +440,10 @@ public class LoadingImageActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
 
-                    if(stopDownload) {
+                    /*if(stopDownload) {
                         System.out.println("Aborting download...");
                         return;
-                    }
+                    }*/
                     destFilename =  "image_" + df.format(counter);
 
 
@@ -458,7 +458,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                         String finalDestFilename = destFilename;
                         int finalCounter = counter;
 
-                        /*Runnable myRunnable = new Runnable() {
+                        Runnable myRunnable = new Runnable() {
                             @Override
                             public  void run() {
 
@@ -467,21 +467,36 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
                                 synchronized (this){
+                                    //System.out.println("myRunnable notifies after rendering");
+                                    System.out.println(Thread.currentThread().getName() + "notifies after rendering");
                                     this.notify();
                                 }
 
                             }
                         };
+
+                        if(stopDownload) {
+                            System.out.println("Aborting download...");
+                            synchronized (myRunnable) {
+                                //System.out.println("My runnable notifies after aborting");
+                                System.out.println(Thread.currentThread().getName() + "aborts and notifies ");
+                                myRunnable.notify();
+                            }
+                            return;
+                        }
                         synchronized (myRunnable) {
                             runOnUiThread(myRunnable);
                             try {
-                                myRunnable.wait();
+
+                                System.out.println(Thread.currentThread().getName() + " waits");
+
+                                myRunnable.wait(0);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                        }*/
+                        }
 
-                        runOnUiThread(new Runnable() {
+                        /*runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
@@ -494,7 +509,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 onePictureDownloadSuccess(finalCounter,picture);
 
                             }
-                        });
+                        });*/
 
                     }
 
