@@ -63,7 +63,8 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         hardHistory = findViewById(R.id.hardHistory);
         hardHistory.setOnClickListener(this);
         difficulty = findViewById(R.id.difficulty);
-        difficulty.setText("Difficulty: Normal");
+        String diffCapfirst = scoresMode.substring(0, 1).toUpperCase() + scoresMode.substring(1);
+        difficulty.setText("Difficulty: " + diffCapfirst);
     }
 
     private void retrieveTopFiveScores(SharedPreferences pref) {
@@ -81,13 +82,11 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         if (view == normalHistory){
             scoresMode = "normal";
             reload();
-            difficulty.setText("Difficulty: Normal");
         }
 
         if (view == hardHistory){
             scoresMode = "hard";
             reload();
-            difficulty.setText("Difficulty: Hard");
         }
 
         if (view == returnBtn) {
