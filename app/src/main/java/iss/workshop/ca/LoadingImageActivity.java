@@ -67,6 +67,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread downloadImagesThread;
     private Thread downloadOneImageThread;
     private volatile boolean stopDownload = false;
+    private volatile boolean stopRender = false;
 
 
 
@@ -247,6 +248,8 @@ public class LoadingImageActivity extends AppCompatActivity {
                         LoadingImageActivity.this.notify();
                     }
 
+
+
                     // Ensure that imgUrlThread has terminated
                     if (imgUrlThread != null) {
                         try {
@@ -264,6 +267,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
+
 
                     // Clear images from view
                     rowAdapter.pictures.clear();//clear previous images
@@ -465,6 +469,15 @@ public class LoadingImageActivity extends AppCompatActivity {
                         Runnable myRunnable = new Runnable() {
                             @Override
                             public  void run() {
+                                if(stopDownload){
+
+
+                                    synchronized (LoadingImageActivity.this){
+                                        System.out.println("Interrupting myRunnable");
+                                        LoadingImageActivity.this.notify();
+                                    }
+                                    return;
+                                }
 
                                 System.out.println("Rendering " + finalDestFilename);
 
@@ -472,9 +485,10 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 onePictureDownloadSuccess(finalCounter,picture);
                                 synchronized (LoadingImageActivity.this){
                                     //System.out.println("myRunnable notifies after rendering");
-                                    System.out.println(Thread.currentThread().getName() + " notifies after rendering");
+                                    // System.out.println(Thread.currentThread().getName() + " notifies after rendering");
                                     LoadingImageActivity.this.notify();
                                 }
+
 
                             }
                         };
@@ -483,7 +497,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                             System.out.println("Aborting download...");
                             synchronized (LoadingImageActivity.this) {
                                 //System.out.println("My runnable notifies after aborting");
-                                System.out.println(Thread.currentThread().getName() + " aborts and notifies ");
+                                //System.out.println(Thread.currentThread().getName() + " aborts and notifies ");
                                 LoadingImageActivity.this.notify();
                             }
                             return;
@@ -492,7 +506,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                             runOnUiThread(myRunnable);
                             try {
 
-                                System.out.println(Thread.currentThread().getName() + " waits");
+                                //System.out.println(Thread.currentThread().getName() + " waits");
 
                                 LoadingImageActivity.this.wait();
                             } catch (InterruptedException e) {
