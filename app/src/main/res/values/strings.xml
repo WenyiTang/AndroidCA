@@ -5,6 +5,7 @@
     <!--Main Menu-->
     <string name="play_btn">Play</string>
     <string name="guide_btn">Guide</string>
+    <string name="settings">Settings</string>
 
     <!--Guide-->
     <string name="guide_header">GUIDE</string>
@@ -34,4 +35,7 @@
     <string name="tries_count">Tries: %1$d</string>
     <string name="timer">Time: </string>
     <string name="cardsize">150dp</string>
+
+    <!--Background Music-->
+    <string name="background_music">Background Music</string>
 </resources>

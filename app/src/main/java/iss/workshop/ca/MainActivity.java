@@ -19,8 +19,10 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private Button startBtn, guideBtn, normalBtn, hardBtn, cancelBtn, leaderboardBtn;
+    private Button startBtn, guideBtn, normalBtn, hardBtn, cancelBtn, leaderboardBtn, settingBtn;
     private ConstraintLayout diffMenu;
+
+    public static boolean continueMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         hardBtn = findViewById(R.id.hardBtn);
                         cancelBtn = findViewById(R.id.cancel_diff);
                         leaderboardBtn = findViewById(R.id.leaderboardBtn);
+                        settingBtn = findViewById(R.id.settingBtn);
 
                         initElements();
                     }
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
+
         setContentView(R.layout.activity_main);
         diffMenu = findViewById(R.id.diffPopup);
         new Thread(new Runnable() {
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         hardBtn = findViewById(R.id.hardBtn);
                         cancelBtn = findViewById(R.id.cancel_diff);
                         leaderboardBtn = findViewById(R.id.leaderboardBtn);
+                        settingBtn = findViewById(R.id.settingBtn);
                         initElements();
                     }
                 });
@@ -81,9 +88,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startBtn.setVisibility(View.INVISIBLE);
             guideBtn.setVisibility(View.INVISIBLE);
             leaderboardBtn.setVisibility(View.INVISIBLE);
+            settingBtn.setVisibility(View.INVISIBLE);
             startBtn.setEnabled(false);
             guideBtn.setEnabled(false);
             leaderboardBtn.setEnabled(false);
+
 
         }
         if(view == guideBtn){
@@ -103,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == leaderboardBtn) {
             Intent intent = new Intent(this, Leaderboard.class);
             intent.putExtra("diff", "normal");
+            startActivity(intent);
+        }
+        if (view == settingBtn) {
+            Intent intent = new Intent(this, SettingPage.class);
             startActivity(intent);
         }
 
@@ -137,5 +150,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (leaderboardBtn != null) {
             leaderboardBtn.setOnClickListener(this);
         }
+        if (settingBtn != null) {
+            settingBtn.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MusicManager.release();
     }
 }

@@ -46,6 +46,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     private ConstraintLayout endPopup;
     private ArrayList<Picture> duplicatePics;
 
+    public static boolean continueMusic;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +162,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             menu.setVisibility(View.VISIBLE);
             menuBtn.setVisibility(View.INVISIBLE);
             ready = false;
+            MusicManager.pause();
         }
 
         if (view == resumeBtn){
@@ -167,6 +170,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
             menuBtn.setVisibility(View.VISIBLE);
             resume();
             ready = true;
+            MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
         }
 
         if (view == playAgainBtn){
@@ -212,6 +216,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         menu.setVisibility(View.INVISIBLE);
         menuBtn.setVisibility(View.VISIBLE);
+
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 
     public void start(){
@@ -377,6 +383,21 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     public void playSound(int soundId) {
         MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), soundId);
         mediaPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!continueMusic){
+            MusicManager.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        continueMusic=true;
+        MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
 //
 //        SortScore sorter = new SortScore();
