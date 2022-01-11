@@ -1,6 +1,7 @@
 package iss.workshop.ca;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,40 +18,124 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button startBtn;
-    private Button guideBtn;
-    private Button leaderboardBtn;
+
+    private Button startBtn, guideBtn, normalBtn, hardBtn, cancelBtn, leaderboardBtn;
+    private ConstraintLayout diffMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startBtn = findViewById(R.id.selectImage);
-        startBtn.setOnClickListener(this);
+        diffMenu = findViewById(R.id.diffPopup);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        startBtn = findViewById(R.id.selectImage);
+                        guideBtn = findViewById(R.id.guideBtn);
+                        normalBtn = findViewById(R.id.normalBtn);
+                        hardBtn = findViewById(R.id.hardBtn);
+                        cancelBtn = findViewById(R.id.cancel_diff);
+                        leaderboardBtn = findViewById(R.id.leaderboardBtn);
 
-        guideBtn = findViewById(R.id.guideBtn);
-        guideBtn.setOnClickListener(this);
+                        initElements();
+                    }
+                });
+            }
+        }).start();
+    }
 
-        leaderboardBtn = findViewById(R.id.leaderboardBtn);
-        leaderboardBtn.setOnClickListener(this);
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setContentView(R.layout.activity_main);
+        diffMenu = findViewById(R.id.diffPopup);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        startBtn = findViewById(R.id.selectImage);
+                        guideBtn = findViewById(R.id.guideBtn);
+                        normalBtn = findViewById(R.id.normalBtn);
+                        hardBtn = findViewById(R.id.hardBtn);
+                        cancelBtn = findViewById(R.id.cancel_diff);
+                        leaderboardBtn = findViewById(R.id.leaderboardBtn);
+                        initElements();
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
     public void onClick(View view) {
         if (view == startBtn){
-            Intent intent = new Intent(this, LoadingImageActivity.class);
-            startActivity(intent);
-            //finish();
+            diffMenu.setVisibility(View.VISIBLE);
+            diffMenu.setEnabled(true);
+            startBtn.setVisibility(View.INVISIBLE);
+            guideBtn.setVisibility(View.INVISIBLE);
+            leaderboardBtn.setVisibility(View.INVISIBLE);
+            startBtn.setEnabled(false);
+            guideBtn.setEnabled(false);
+            leaderboardBtn.setEnabled(false);
+
         }
-        else if(view == guideBtn){
+        if(view == guideBtn){
             Intent intent = new Intent(this, Guide.class);
             startActivity(intent);
         }
-        else if (view == leaderboardBtn) {
-            Intent intent = new Intent(this, Leaderboard.class);
+        if(view == normalBtn){
+            Intent intent = new Intent(this, LoadingImageActivity.class);
+            intent.putExtra("diff", "normal");
             startActivity(intent);
+        }
+        if(view == hardBtn){
+            Intent intent = new Intent(this, LoadingImageActivity.class);
+            intent.putExtra("diff", "hard");
+            startActivity(intent);
+        }
+        if (view == leaderboardBtn) {
+            Intent intent = new Intent(this, Leaderboard.class);
+            intent.putExtra("diff", "normal");
+            startActivity(intent);
+        }
+
+        if(view == cancelBtn){
+            diffMenu.setVisibility(View.INVISIBLE);
+            diffMenu.setEnabled(false);
+            startBtn.setVisibility(View.VISIBLE);
+            guideBtn.setVisibility(View.VISIBLE);
+            leaderboardBtn.setVisibility(View.VISIBLE);
+            startBtn.setEnabled(true);
+            guideBtn.setEnabled(true);
+            leaderboardBtn.setEnabled(true);
+        }
+    }
+
+    private void initElements() {
+        if (startBtn != null) {
+            startBtn.setOnClickListener(this);
+        }
+        if (guideBtn != null) {
+            guideBtn.setOnClickListener(this);
+        }
+        if (normalBtn != null) {
+            normalBtn.setOnClickListener(this);
+        }
+        if (hardBtn != null) {
+            hardBtn.setOnClickListener(this);
+        }
+        if (cancelBtn != null) {
+            cancelBtn.setOnClickListener(this);
+        }
+        if (leaderboardBtn != null) {
+            leaderboardBtn.setOnClickListener(this);
         }
     }
 }

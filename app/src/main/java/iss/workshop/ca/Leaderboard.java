@@ -8,19 +8,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Leaderboard extends AppCompatActivity implements View.OnClickListener{
 
-    private Button returnBtn, clearBtn;
+    private Button returnBtn, clearBtn, normalHistory, hardHistory;
+    private TextView difficulty;
     private int[] topAttempts = new int[5];
     private String[] topTime = new String[5];
     List<Score> topScores = new ArrayList<>();
     List<String> attemptStrings = new ArrayList<>();
     List<String> timeStrings = new ArrayList<>();
     private final int numOfRanks = 5;
+    private String scoresMode;
 
 
     @Override
@@ -33,7 +36,15 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
             timeStrings.add("topTime" + i);
         }
 
-        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
+        Intent intent = getIntent();
+        scoresMode = intent.getStringExtra("diff");
+
+        SharedPreferences pref = getSharedPreferences(scoresMode, MODE_PRIVATE);
+
+        if (!pref.contains("topAttempts1")){
+            resetLeaderboard(scoresMode);
+            pref = getSharedPreferences(scoresMode, MODE_PRIVATE);
+        }
 
         retrieveTopFiveScores(pref);
 
@@ -47,11 +58,17 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         returnBtn.setOnClickListener(this);
         clearBtn = findViewById(R.id.clearBtn);
         clearBtn.setOnClickListener(this);
+
+        normalHistory = findViewById(R.id.normalHistory);
+        normalHistory.setOnClickListener(this);
+        hardHistory = findViewById(R.id.hardHistory);
+        hardHistory.setOnClickListener(this);
+        difficulty = findViewById(R.id.difficulty);
+        String diffCapfirst = scoresMode.substring(0, 1).toUpperCase() + scoresMode.substring(1);
+        difficulty.setText("Difficulty: " + diffCapfirst);
     }
 
     private void retrieveTopFiveScores(SharedPreferences pref) {
-
-        SharedPreferences.Editor editor = pref.edit();
 
         for (int j = 0; j < numOfRanks; j++){
             topAttempts[j] = pref.getInt(attemptStrings.get(j), 0);
@@ -63,6 +80,16 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
+        if (view == normalHistory){
+            scoresMode = "normal";
+            reload();
+        }
+
+        if (view == hardHistory){
+            scoresMode = "hard";
+            reload();
+        }
+
         if (view == returnBtn) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -70,7 +97,8 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         }
 
         if (view == clearBtn){
-            resetLeaderboard();
+            resetLeaderboard(scoresMode);
+            reload();
         }
     }
 
@@ -81,9 +109,11 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
     }
     */
 
-    public void resetLeaderboard(){
 
-        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
+    public void resetLeaderboard(String scoresMode){
+
+        SharedPreferences pref = getSharedPreferences(scoresMode, MODE_PRIVATE);
+
         SharedPreferences.Editor editor = pref.edit();
 
         for (int j = 0; j < numOfRanks; j++){
@@ -92,8 +122,13 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         }
 
         editor.commit();
+    }
 
-        startActivity(getIntent());
+    public void reload(){
+        Intent intent = new Intent(this, Leaderboard.class);
+        intent.putExtra("diff", scoresMode);
+        startActivity(intent);
+
         finish();
         overridePendingTransition(0,0);
     }
