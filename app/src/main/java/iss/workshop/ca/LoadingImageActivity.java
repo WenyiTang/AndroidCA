@@ -243,6 +243,10 @@ public class LoadingImageActivity extends AppCompatActivity {
                     // Stop imgUrlThread and downloadImagesThread
                     stopDownload = true;
 
+                    synchronized (LoadingImageActivity.this) {
+                        LoadingImageActivity.this.notify();
+                    }
+
                     // Ensure that imgUrlThread has terminated
                     if (imgUrlThread != null) {
                         try {
@@ -410,7 +414,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
 
-    public synchronized void downloadImages() {
+    public void downloadImages() {
         //System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
         try {
@@ -466,10 +470,10 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
-                                synchronized (this){
+                                synchronized (LoadingImageActivity.this){
                                     //System.out.println("myRunnable notifies after rendering");
-                                    System.out.println(Thread.currentThread().getName() + "notifies after rendering");
-                                    this.notify();
+                                    System.out.println(Thread.currentThread().getName() + " notifies after rendering");
+                                    LoadingImageActivity.this.notify();
                                 }
 
                             }
@@ -477,20 +481,20 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                         if(stopDownload) {
                             System.out.println("Aborting download...");
-                            synchronized (myRunnable) {
+                            synchronized (LoadingImageActivity.this) {
                                 //System.out.println("My runnable notifies after aborting");
-                                System.out.println(Thread.currentThread().getName() + "aborts and notifies ");
-                                myRunnable.notify();
+                                System.out.println(Thread.currentThread().getName() + " aborts and notifies ");
+                                LoadingImageActivity.this.notify();
                             }
                             return;
                         }
-                        synchronized (myRunnable) {
+                        synchronized (LoadingImageActivity.this) {
                             runOnUiThread(myRunnable);
                             try {
 
                                 System.out.println(Thread.currentThread().getName() + " waits");
 
-                                myRunnable.wait(0);
+                                LoadingImageActivity.this.wait();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
