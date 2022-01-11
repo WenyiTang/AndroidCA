@@ -26,7 +26,9 @@ public class SettingPage extends AppCompatActivity{
         setContentView(R.layout.activity_setting);
 
         musicSwitch = findViewById(R.id.musicSwitch);
-        //musicSwitch.setChecked(true);
+        SharedPreferences sp = getSharedPreferences("switchKey",MODE_PRIVATE);
+        boolean silent = sp.getBoolean("switchKey",true);
+        musicSwitch.setChecked(silent);
 
         settings = (UserSettings) getApplication();
         initSwitchListener();
@@ -74,6 +76,12 @@ public class SettingPage extends AppCompatActivity{
                 //SharedPreferences.Editor editor=getSharedPreferences(UserSettings.PREFERENCES,MODE_PRIVATE).edit();
                 //editor.putString(UserSettings.SOUND_PREF,settings.getSoundPref());
                 //editor.commit();
+
+                SharedPreferences sp = getSharedPreferences("switchKey", MODE_PRIVATE);
+                SharedPreferences.Editor switchEditor = sp.edit();
+                switchEditor.putBoolean("switchKey",isChecked);
+                switchEditor.commit();
+
 
                 updateVolume();
                 getMusicVolume(getApplicationContext());
