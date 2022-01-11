@@ -52,7 +52,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="100dp"
         android:hint="please input url "
-        android:text="stocksnap.io"
         app:layout_constraintTop_toBottomOf="@+id/TextView1"
         app:layout_constraintLeft_toLeftOf="parent"
         android:background="@drawable/my_et"
@@ -87,13 +86,13 @@
         android:layout_gravity="center"
         android:max="100"
         android:progress="0"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintHeight_percent="0.05"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/urlEditText"
-        />
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/DownloadText"
@@ -102,7 +101,7 @@
         android:textSize="20sp"
         android:typeface="sans"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="@id/progressBar"
         app:layout_constraintBottom_toBottomOf="@id/progressBar"
         app:layout_constraintLeft_toLeftOf="@id/progressBar"

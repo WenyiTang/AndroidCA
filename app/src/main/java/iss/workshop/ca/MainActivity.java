@@ -18,7 +18,6 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     private Button startBtn, guideBtn, normalBtn, hardBtn, cancelBtn, leaderboardBtn;
     private ConstraintLayout diffMenu;
 
@@ -39,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         normalBtn = findViewById(R.id.normalBtn);
                         hardBtn = findViewById(R.id.hardBtn);
                         cancelBtn = findViewById(R.id.cancel_diff);
+                        leaderboardBtn = findViewById(R.id.leaderboardBtn);
+
 
                         initElements();
                     }
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }).start();
     }
-
 
     @Override
     public void onResume() {
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         hardBtn = findViewById(R.id.hardBtn);
                         cancelBtn = findViewById(R.id.cancel_diff);
                         leaderboardBtn = findViewById(R.id.leaderboardBtn);
+
                         initElements();
                     }
                 });
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(view == leaderboardBtn) {
             Intent intent = new Intent(this, Leaderboard.class);
+            intent.putExtra("diff", "normal");
             startActivity(intent);
         }
 
@@ -133,6 +135,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cancelBtn.setOnClickListener(this);
         }
         if (leaderboardBtn != null) {
+            leaderboardBtn.setOnClickListener(this);
+        }
+    }
+
+    private void initElements() {
+        if (startBtn != null) {
+            startBtn.setOnClickListener(this);
+        }
+        if (guideBtn != null) {
+            guideBtn.setOnClickListener(this);
+        }
+        if (normalBtn != null) {
+            normalBtn.setOnClickListener(this);
+        }
+        if (hardBtn != null) {
+            hardBtn.setOnClickListener(this);
+        }
+        if (cancelBtn != null) {
+            cancelBtn.setOnClickListener(this);
+        }
+        if (leaderboardBtn != null){
             leaderboardBtn.setOnClickListener(this);
         }
     }

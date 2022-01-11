@@ -88,7 +88,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
                         restartBtn = findViewById(R.id.restartBtn);
                         menu = findViewById(R.id.menuPopup);
                         endPopup = findViewById(R.id.endGame);
-
                         initElements();
                     }
                 });
@@ -288,12 +287,12 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         menuBtn.setVisibility(View.INVISIBLE);
 
-        updateScore(triesCount, timeTaken);
-      
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
         endPopup.setVisibility(View.VISIBLE);
+
+        updateScore(triesCount, timeTaken);
     }
 
     protected void move1(ImageView imageView, int i){
@@ -381,11 +380,24 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     private void updateScore(int attempts, String timeTaken) {
-        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
+
+        String scoresFileName = "";
+
+        if (pictures.size() == 6){
+            scoresFileName = "normal";
+        }
+        else if (pictures.size() == 8){
+            scoresFileName = "hard";
+        }
+
+        SharedPreferences pref = getSharedPreferences(scoresFileName, MODE_PRIVATE);
+
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("attemptsNew", attempts);
         editor.putString("timeTakenNew", timeTaken);
         editor.commit();
-    }
 
+        SortScore sorter = new SortScore();
+        sorter.updateScoreboard(pref);
+    }
 }

@@ -31,7 +31,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     protected File[] existingFiles;
     protected ArrayList<Bitmap> imgBitmaps = new ArrayList<>();
 
-    protected int RequireSelectedSize = 6;
 
 
     public interface ItemSelectedChangeListener{
@@ -41,10 +40,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
     public List<Picture> pictures;
     private Context context;
+
     public List<Picture> picturesSelected;
     public int count = 0;
     int size = 0;
-
 
 
     public RowAdapter(int[] picturesArr) {
@@ -105,15 +104,33 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
         public void bind(final Picture picture, final int position,Context context) {
 
-            if (picture.getBitmap() == null){
+           //imageView.setImageResource(Integer.parseInt(picture.getPath()));
 
-                imageView.setBackgroundResource(R.drawable.no_img);
+//            Bitmap bitmap = null;
+//            String imgSrc = picture.getPath();
+//            try {
+//                bitmap = Glide.with(context)
+//                        .asBitmap()
+//                        .load(imgSrc)
+//                        .submit()
+//                        .get();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            // back to main thread
+//            Bitmap finalBitmap = bitmap;
+//
+//            imageView.setImageBitmap(finalBitmap);
 
-            }else {
-                imageView.setImageBitmap(picture.getBitmap());
-            }
+            //mageView.setBackgroundResource(Integer.parseInt(picture.getPath()));
 
-            if (pictures.size() >= 20 && pictures.get(19).getBitmap() != null){
+            imageView.setImageBitmap(picture.getBitmap());
+
+
+            if (pictures.size() >= 20){
                 textView.setVisibility(View.VISIBLE);
             }else {
                 textView.setVisibility(View.INVISIBLE);
@@ -156,7 +173,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
                             picture.setSelectCount(0);
 
                         } else {
-
 
                             if (picturesSelected.size() >= size){
 
