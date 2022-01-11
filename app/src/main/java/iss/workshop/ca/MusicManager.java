@@ -19,16 +19,6 @@ public class MusicManager {
     private static int currentMusic = -1;
     private static int previousMusic =-1;
 
-    /*public static float getMusicVolume(Context context){
-        SharedPreferences sharedPref = context.getApplicationContext().getSharedPreferences("volume", Context.MODE_PRIVATE);
-        float volume = sharedPref.getFloat("volume",0.5f);
-
-        //SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        //float volume = pref.getFloat("volume",0.5f);
-
-
-        return volume;
-    }*/
 
     public static void start(Context context, int music){
         start(context, music, false);
@@ -51,6 +41,8 @@ public class MusicManager {
             //playing some other music, pause it and change;
             pause();
         }
+
+
         currentMusic = music;
         Log.d(TAG, "current music is now ["+currentMusic+"]");
         MediaPlayer mp = players.get(music);
@@ -64,7 +56,7 @@ public class MusicManager {
                 mp = MediaPlayer.create(context, R.raw.background);
             }
             else if (music == MUSIC_GAMEPLAY){
-                mp.pause();
+                mp = MediaPlayer.create(context, R.raw.background);
             }
             else {
                 Log.e(TAG, "unsupported music number:" + music);
@@ -73,7 +65,6 @@ public class MusicManager {
             players.put(music,mp);
             try{
                 mp.setVolume(SettingPage.getMusicVolume(context),SettingPage.getMusicVolume(context));
-                //mp.setVolume(0.5f,0.5f);
                 mp.setLooping(true);
                 mp.start();
             }

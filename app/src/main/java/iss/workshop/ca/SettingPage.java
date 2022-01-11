@@ -32,19 +32,7 @@ public class SettingPage extends AppCompatActivity{
 
         settings = (UserSettings) getApplication();
         initSwitchListener();
-        loadSharedPreferences();
 
-
-
-    }
-
-    private void loadSharedPreferences(){
-        SharedPreferences sharedPreferences=getSharedPreferences(UserSettings.PREFERENCES,MODE_PRIVATE);
-        String soundPref=sharedPreferences.getString(UserSettings.PREFERENCES,UserSettings.SOUND_ON);
-
-        settings.setSoundPref(soundPref);
-        getMusicVolume(getApplicationContext());
-        updateVolume();
     }
 
 
@@ -60,14 +48,12 @@ public class SettingPage extends AppCompatActivity{
                 if(isChecked){
                     settings.setSoundPref(UserSettings.SOUND_ON);
                     Toast.makeText(getApplicationContext(), "Background music switched on", Toast.LENGTH_SHORT).show();
-                    //MusicManager.start(getApplicationContext(),MusicManager.MUSIC_BACKGROUND);
                     editor.putFloat("volume",1f);
                     editor.commit();
                 }
                 else{
                     settings.setSoundPref(UserSettings.SOUND_OFF);
                     Toast.makeText(getApplicationContext(), "Background music switched off", Toast.LENGTH_SHORT).show();
-                    //MusicManager.release();
                     editor.clear();
                     editor.putFloat("volume",0f);
                     editor.commit();
@@ -84,7 +70,6 @@ public class SettingPage extends AppCompatActivity{
 
 
                 updateVolume();
-                getMusicVolume(getApplicationContext());
 
 
             }
@@ -95,10 +80,6 @@ public class SettingPage extends AppCompatActivity{
         SharedPreferences sharedPref = context.getSharedPreferences("volume", Context.MODE_PRIVATE);
         float volume = sharedPref.getFloat("volume",1f);
 
-        //SharedPreferences sharedPref = context.getSharedPreferences(UserSettings.SOUND_PREF, Context.MODE_PRIVATE);
-        //float volume = sharedPref.getFloat(UserSettings.SOUND_PREF,1f);
-
-
 
         return volume;
     }
@@ -106,6 +87,7 @@ public class SettingPage extends AppCompatActivity{
     private void updateVolume(){
 
         if(settings.getSoundPref().equals(UserSettings.SOUND_ON)){
+            MusicManager.release();
             MusicManager.start(getApplicationContext(),MusicManager.MUSIC_BACKGROUND);
         }
 
