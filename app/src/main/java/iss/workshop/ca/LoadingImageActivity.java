@@ -65,6 +65,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private String[] imageURLArray;
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
+    private Thread downloadOneImageThread;
     private volatile boolean stopDownload = false;
 
 
@@ -218,13 +219,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoadingImageActivity.this);
 
                 // FOR DEMO
-                /*fetchClick++;
+                fetchClick++;
                 if(fetchClick % 2 == 0) {
                     urlInput.setText("stocksnap.io/search/cats");
                 }
                 else {
                     urlInput.setText("stocksnap.io/search/dogs");
-                }*/
+                }
 
 
                 externalUrl ="https://" + urlInput.getText().toString();
@@ -280,6 +281,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                     // Call on methods to start imgUrlThread and downloadImagesThread
                     fetchImgSRCs();
+                    //downloadEachImage();
                     downloadImages();
 
                 }
@@ -341,13 +343,77 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     }
 
+    public void downloadEachImage() {
+        //System.out.println("Executing downloadImages()...");
+        ImageDownloader downloader = new ImageDownloader();
+        try {
+            imgUrlThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // Delete existing images on SD card
+        deleteExistingImgFiles();
+
+        String destFilename;
+        File destFile = null;
+        File dir =getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        int counter = 0;
+        DecimalFormat df = new DecimalFormat("00");
+        for (String imgURL : imageURLArray) {
+            if(stopDownload) {
+                System.out.println("Aborting download...");
+                return;
+            }
+            destFilename =  "image_" + df.format(counter);
+
+
+            destFile = new File(dir,destFilename);
+            File finalDestFile = destFile;
+            String finalDestFilename = destFilename;
+            int finalCounter = counter;
+
+            downloadOneImageThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if(stopDownload) {
+                        return;
+                    }
+                    if(downloader.downloadImage(imgURL, finalDestFile)) {
+                        System.out.println("Downloaded file: " + finalDestFilename);
+                        // terminate thread once image is downloaded
+                        return;
+
+                    }
+                }
+            }
+            );
+            downloadOneImageThread.start();
+            // Ensure that downloadImagesThread has terminated
+            if (downloadOneImageThread != null) {
+                try {
+                    downloadOneImageThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("Rendering " + destFilename);
+            Picture picture = new Picture(BitmapFactory.decodeFile(destFile.getAbsolutePath()), destFile);
+            onePictureDownloadSuccess(counter,picture);
+            counter++;
+
+
+        }
+
+
+
+    }
+
 
 
     public void downloadImages() {
         //System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
         try {
-
             imgUrlThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -397,6 +463,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 if(stopDownload) {
                                     return;
                                 }
+                                System.out.println("Rendering " + finalDestFilename);
 
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
