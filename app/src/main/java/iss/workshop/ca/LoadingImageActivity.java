@@ -163,7 +163,8 @@ public class LoadingImageActivity extends AppCompatActivity {
 
             if(rowAdapter.pictures.get(index).getBitmap() != null){
                 TextView downloading = findViewById(R.id.DownloadText);
-                String downloadStr = getString(R.string.DownloadText, index,pictures.size());
+                int imageNum = index +1 ;
+                String downloadStr = getString(R.string.DownloadText, imageNum,pictures.size());
                 downloading.setText(downloadStr);
                 ValueAnimator animator = ValueAnimator.ofInt(0, 100);
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
