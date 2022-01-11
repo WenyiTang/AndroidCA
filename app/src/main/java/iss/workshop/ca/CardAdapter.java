@@ -13,35 +13,10 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-public class CardAdapter extends /*ArrayAdapter<Object>*/ BaseAdapter {
+public class CardAdapter extends BaseAdapter {
 
     private final Context context;
-   //protected String[] imgs;
     protected ArrayList<Picture> pics;
-
-//    public CardAdapter(Context context, String[] imgs){
-//        super(context, R.layout.card_item);
-//        this.context = context;
-//        this.imgs = imgs;
-//
-//        addAll(new Object[imgs.length]);
-//    }
-
-//        public CardAdapter(Context context, String[] imgs){
-//        super(context, R.layout.card_item);
-//        this.context = context;
-//        this.imgs = imgs;
-//
-//        addAll(new Object[imgs.length]);
-//    }
-
-//    public CardAdapter(Context context, ArrayList<Picture> pics){
-//        super(context, R.layout.card_item);
-//        this.context = context;
-//        this.pics = pics;
-//
-//        addAll(new Object[pics.size()]);
-//    }
 
     public CardAdapter(Context context, ArrayList<Picture> pics){
         this.context = context;
