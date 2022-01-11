@@ -410,7 +410,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
 
-    public void downloadImages() {
+    public synchronized void downloadImages() {
         //System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
         try {
@@ -450,12 +450,37 @@ public class LoadingImageActivity extends AppCompatActivity {
                     destFile = new File(dir,destFilename);
 
 
+
                     if(downloader.downloadImage(imgURL,destFile))
                     {
                         System.out.println("Downloaded file: " + destFilename);
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
                         int finalCounter = counter;
+
+                        /*Runnable myRunnable = new Runnable() {
+                            @Override
+                            public  void run() {
+
+                                System.out.println("Rendering " + finalDestFilename);
+
+                                Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
+                                onePictureDownloadSuccess(finalCounter,picture);
+                                synchronized (this){
+                                    this.notify();
+                                }
+
+                            }
+                        };
+                        synchronized (myRunnable) {
+                            runOnUiThread(myRunnable);
+                            try {
+                                myRunnable.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }*/
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
