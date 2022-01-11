@@ -9,5 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/background_music"
-        android:focusableInTouchMode="false"/>
+        android:focusableInTouchMode="false"
+        android:gravity="center"/>
 </LinearLayout>
