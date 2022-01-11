@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startBtn.setEnabled(false);
             guideBtn.setEnabled(false);
             leaderboardBtn.setEnabled(false);
+            settingBtn.setEnabled(false);
 
 
         }
@@ -125,9 +126,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startBtn.setVisibility(View.VISIBLE);
             guideBtn.setVisibility(View.VISIBLE);
             leaderboardBtn.setVisibility(View.VISIBLE);
+            settingBtn.setVisibility(View.VISIBLE);
             startBtn.setEnabled(true);
             guideBtn.setEnabled(true);
             leaderboardBtn.setEnabled(true);
+            settingBtn.setEnabled(true);
         }
     }
 
