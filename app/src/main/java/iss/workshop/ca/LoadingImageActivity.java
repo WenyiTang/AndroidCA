@@ -246,7 +246,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     downloading.setVisibility(View.VISIBLE);
                     downloaded.setVisibility(View.INVISIBLE);
-
+                    nextBtn.setVisibility(View.INVISIBLE);
 
 
                     // Stop imgUrlThread and downloadImagesThread
