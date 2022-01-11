@@ -19,12 +19,16 @@ public class MusicManager {
     private static int currentMusic = -1;
     private static int previousMusic =-1;
 
-    public static float getMusicVolume(Context context){
-        /*SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        float volume = sharedPreferences.getFloat("volume",1f);*/
-        float volume = 1f;
+    /*public static float getMusicVolume(Context context){
+        SharedPreferences sharedPref = context.getApplicationContext().getSharedPreferences("volume", Context.MODE_PRIVATE);
+        float volume = sharedPref.getFloat("volume",0.5f);
+
+        //SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        //float volume = pref.getFloat("volume",0.5f);
+
+
         return volume;
-    }
+    }*/
 
     public static void start(Context context, int music){
         start(context, music, false);
@@ -68,7 +72,7 @@ public class MusicManager {
             }
             players.put(music,mp);
             try{
-                mp.setVolume(getMusicVolume(context),getMusicVolume(context));
+                mp.setVolume(SettingPage.getMusicVolume(context),SettingPage.getMusicVolume(context));
                 mp.setLooping(true);
                 mp.start();
             }

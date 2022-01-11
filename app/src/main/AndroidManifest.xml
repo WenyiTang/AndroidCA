@@ -15,7 +15,7 @@
         android:theme="@style/Theme.CA"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".UserSettings"
+            android:name=".SettingPage"
             android:exported="false" />
         <activity
             android:name=".Guide"
