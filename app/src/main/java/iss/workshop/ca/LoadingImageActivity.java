@@ -230,14 +230,14 @@ public class LoadingImageActivity extends AppCompatActivity {
                 // FOR DEMO
                 /*fetchClick++;
                 if(fetchClick % 2 == 0) {
-                    urlInput.setText("stocksnap.io/search/cats");
+                    urlInput.setText("https://stocksnap.io/search/cats");
                 }
                 else {
-                    urlInput.setText("stocksnap.io/search/dogs");
+                    urlInput.setText("https://stocksnap.io/search/dogs");
                 }*/
 
 
-                externalUrl ="https://" + urlInput.getText().toString();
+                externalUrl = urlInput.getText().toString();
                 System.out.println("Get images from " + externalUrl);
                 if(Patterns.WEB_URL.matcher(externalUrl).matches()) {
 
