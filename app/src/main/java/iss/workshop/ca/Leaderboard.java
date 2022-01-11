@@ -102,13 +102,6 @@ public class Leaderboard extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    /*
-    public static Duration parseDuration(String durStr) {
-        String isoString = durStr.replaceFirst("^(\\d{1,2}):(\\d{2})$", "PT$1M$2S");
-        return Duration.parse(isoString);
-    }
-    */
-
 
     public void resetLeaderboard(String scoresMode){
 

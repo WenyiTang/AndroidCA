@@ -63,23 +63,9 @@ public class CardAdapter extends /*ArrayAdapter<Object>*/ BaseAdapter {
         return 0;
     }
 
-//    public View getView(int pos, View view, @NonNull ViewGroup parent){
-//        if (view == null){
-//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-//            view = inflater.inflate(R.layout.card_item, parent, false);
-//        }
-//
-//        ImageView imageView = view.findViewById(R.id.cardImg);
-//        int id = context.getResources().getIdentifier(imgs[pos], "drawable", context.getOpPackageName());
-//        imageView.setImageResource(id);
-//        imageView.setVisibility(View.INVISIBLE);
-//
-//        return view;
-//    }
     public View getView(int pos, View view, @NonNull ViewGroup parent){
         if (view == null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-//            view = inflater.inflate(R.layout.card_item, parent, false);
             view = inflater.inflate(R.layout.card_item, null);
         }
 

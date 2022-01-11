@@ -62,10 +62,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
 
         duplicatePics = duplicateAndShuffle(pictures);
 
-//        for (Picture pic : pictures) {
-//            picId.add(pic.getId());
-//        }
-
         //initialize primary elements on main thread
         menuBtn = findViewById(R.id.menuBtn);
         simpleChronometer = findViewById(R.id.timerCount);
@@ -191,12 +187,6 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     public void restartGame(){
-        //couldnt find a way to restart the entire activity
-        //recreate() cause black screen to appear for 1s
-        //starting new intent requires passing of the pictures from LoadingImageActivity again,
-        ////but getIntent() in beginning of onCreate will be from this GamePlay activity
-
-        //hence one solution is to set the matches count to 0, and load the game grid again
 
         duplicatePics = duplicateAndShuffle(pictures);
 
@@ -399,8 +389,4 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         continueMusic=true;
         MusicManager.start(this,MusicManager.MUSIC_BACKGROUND);
     }
-//
-//        SortScore sorter = new SortScore();
-//        sorter.updateScoreboard(pref);
-//    }
 }

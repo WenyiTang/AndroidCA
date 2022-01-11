@@ -44,22 +44,6 @@ public class SortScore {
             topScores.add(score);
         }
 
-        //previously
-//        topAttempts[0] = pref.getInt("topAttempts1", 0);
-//        topAttempts[1] = pref.getInt("topAttempts2", 0);
-//        //...
-//
-//        topTime[0] = pref.getString("topTime1", "0 seconds");
-//        topTime[1] = pref.getString("topTime2", "0 seconds");
-//        //...
-//
-//        Score score1 = new Score(topAttempts[0], topTime[0]);
-//        Score score2 = new Score(topAttempts[1], topTime[1]);
-//        //...
-//
-//        topScores.add(score1);
-//        topScores.add(score2);
-//        //...
     }
 
     private List<Score> compareAndUpdateScores(List<Score> topScores, Score newScore,

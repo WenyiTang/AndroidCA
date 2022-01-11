@@ -202,7 +202,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                     }
                 });
                 animator.setRepeatCount(0);
-//            animator.setDuration(2000);
                 animator.start();
             }else {
 

@@ -78,8 +78,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         // set value to imageView  and TextView
         holder.bind(pictures.get(position), position,context);
 
-//        holder.imageView.setImageResource(picturesArr[position]);
-//        holder.textView.setText("1");
 
     }
 
@@ -121,11 +119,9 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
 
             if (picture.getSelectCount() > 0) {
                 textView.setText(picture.getSelectCount() + "");
-               // textView.setBackground(context.getResources().getDrawable(R.drawable.background_count_selected));
                 textView.setBackgroundResource(R.drawable.background_count_selected);
             } else {
                 textView.setText("");
-                //textView.setBackground(context.getResources().getDrawable(R.drawable.background_count_not_selected));
                 textView.setBackgroundResource(R.drawable.background_count_not_selected);
             }
 
@@ -142,7 +138,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
                             textView.setText("");
                             textView.setBackground(context.getResources().getDrawable(R.drawable.background_count_not_selected));
                             //remove object from hashmap
-                            //picturesSelectedMap.remove(picture);
 
                             picturesSelected.remove(picture);
 
@@ -166,7 +161,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
                                 picture.setSelectCount(count);
                                 //add object to hashmap
                                 picturesSelected.add(picture);
-                                //picturesSelected.add(picture);
                                 textView.setText(picture.getSelectCount() + "");
                                 textView.setBackground(context.getResources().getDrawable(R.drawable.background_count_selected));
 
