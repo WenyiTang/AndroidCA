@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
@@ -61,6 +63,8 @@ public class LoadingImageActivity extends AppCompatActivity {
     private String[] imageURLArray;
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
+    private Handler imageDownloadHandler;
+    private Runnable imageRenderRunnable;
     private volatile boolean stopDownload = false;
 
 
@@ -228,13 +232,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoadingImageActivity.this);
 
                 // FOR DEMO
-                /*fetchClick++;
+                fetchClick++;
                 if(fetchClick % 2 == 0) {
                     urlInput.setText("https://stocksnap.io/search/cats");
                 }
                 else {
                     urlInput.setText("https://stocksnap.io/search/dogs");
-                }*/
+                }
 
 
                 externalUrl = urlInput.getText().toString();
@@ -386,6 +390,11 @@ public class LoadingImageActivity extends AppCompatActivity {
 
                     if(stopDownload) {
                         System.out.println("Aborting download...");
+                        System.out.println("Executing handler removeCallbacks(null)...");
+                        if(imageRenderRunnable != null)
+                            imageDownloadHandler.removeCallbacks(imageRenderRunnable);
+                        else
+                            imageDownloadHandler.removeCallbacksAndMessages(null);
                         return;
                     }
                     destFilename =  "image_" + df.format(counter);
@@ -400,7 +409,18 @@ public class LoadingImageActivity extends AppCompatActivity {
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
                         int finalCounter = counter;
-                        runOnUiThread(new Runnable() {
+                        imageDownloadHandler =  new Handler(Looper.getMainLooper());
+                        imageRenderRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                System.out.println("Rendering " + finalDestFilename);
+                                Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
+                                onePictureDownloadSuccess(finalCounter,picture);
+
+                            }
+                        };
+                        imageDownloadHandler.post(imageRenderRunnable);
+                        /*runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
@@ -412,7 +432,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                                 onePictureDownloadSuccess(finalCounter,picture);
 
                             }
-                        });
+                        });*/
 
                     }
 
