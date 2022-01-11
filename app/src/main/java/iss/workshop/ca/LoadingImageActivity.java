@@ -66,6 +66,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
     private Thread downloadOneImageThread;
+    private Thread previousDownloadThread;
     private volatile boolean stopDownload = false;
     private volatile boolean stopRender = false;
 
@@ -263,6 +264,8 @@ public class LoadingImageActivity extends AppCompatActivity {
                     if (downloadImagesThread != null) {
                         try {
                             downloadImagesThread.join();
+
+
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -351,70 +354,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     }
 
-    public void downloadEachImage() {
-        //System.out.println("Executing downloadImages()...");
-        ImageDownloader downloader = new ImageDownloader();
-        try {
-            imgUrlThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // Delete existing images on SD card
-        deleteExistingImgFiles();
 
-        String destFilename;
-        File destFile = null;
-        File dir =getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        int counter = 0;
-        DecimalFormat df = new DecimalFormat("00");
-        for (String imgURL : imageURLArray) {
-            if(stopDownload) {
-                System.out.println("Aborting download...");
-                return;
-            }
-            destFilename =  "image_" + df.format(counter);
-
-
-            destFile = new File(dir,destFilename);
-            File finalDestFile = destFile;
-            String finalDestFilename = destFilename;
-            int finalCounter = counter;
-
-            downloadOneImageThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if(stopDownload) {
-                        return;
-                    }
-                    if(downloader.downloadImage(imgURL, finalDestFile)) {
-                        System.out.println("Downloaded file: " + finalDestFilename);
-                        // terminate thread once image is downloaded
-                        return;
-
-                    }
-                }
-            }
-            );
-            downloadOneImageThread.start();
-            // Ensure that downloadImagesThread has terminated
-            if (downloadOneImageThread != null) {
-                try {
-                    downloadOneImageThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println("Rendering " + destFilename);
-            Picture picture = new Picture(BitmapFactory.decodeFile(destFile.getAbsolutePath()), destFile);
-            onePictureDownloadSuccess(counter,picture);
-            counter++;
-
-
-        }
-
-
-
-    }
 
 
 
@@ -469,15 +409,19 @@ public class LoadingImageActivity extends AppCompatActivity {
                         Runnable myRunnable = new Runnable() {
                             @Override
                             public  void run() {
-                                if(stopDownload){
 
 
-                                    synchronized (LoadingImageActivity.this){
-                                        System.out.println("Interrupting myRunnable");
-                                        LoadingImageActivity.this.notify();
+
+                                    if (stopRender) {
+
+
+                                        synchronized (LoadingImageActivity.this) {
+                                            System.out.println("Interrupting myRunnable");
+                                            LoadingImageActivity.this.notify();
+                                        }
+                                        return;
                                     }
-                                    return;
-                                }
+
 
                                 System.out.println("Rendering " + finalDestFilename);
 
@@ -498,11 +442,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                             synchronized (LoadingImageActivity.this) {
                                 //System.out.println("My runnable notifies after aborting");
                                 //System.out.println(Thread.currentThread().getName() + " aborts and notifies ");
+                                stopRender = true;
                                 LoadingImageActivity.this.notify();
                             }
                             return;
                         }
                         synchronized (LoadingImageActivity.this) {
+                            stopRender = false;
                             runOnUiThread(myRunnable);
                             try {
 
