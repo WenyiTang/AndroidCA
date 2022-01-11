@@ -62,6 +62,7 @@ public class LoadingImageActivity extends AppCompatActivity {
     private Thread imgUrlThread;
     private Thread downloadImagesThread;
     private volatile boolean stopDownload = false;
+    private volatile boolean stopRender = false;
 
 
 
@@ -228,13 +229,14 @@ public class LoadingImageActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoadingImageActivity.this);
 
                 // FOR DEMO
-                /*fetchClick++;
+/*                fetchClick++;
                 if(fetchClick % 2 == 0) {
                     urlInput.setText("https://stocksnap.io/search/cats");
                 }
                 else {
                     urlInput.setText("https://stocksnap.io/search/dogs");
                 }*/
+
 
 
                 externalUrl = urlInput.getText().toString();
@@ -252,6 +254,12 @@ public class LoadingImageActivity extends AppCompatActivity {
                     // Stop imgUrlThread and downloadImagesThread
                     stopDownload = true;
 
+                    // Wake up downloadImagesThread thread if it is waiting
+                    synchronized (LoadingImageActivity.this) {
+                        LoadingImageActivity.this.notify();
+                    }
+
+
                     // Ensure that imgUrlThread has terminated
                     if (imgUrlThread != null) {
                         try {
@@ -265,10 +273,13 @@ public class LoadingImageActivity extends AppCompatActivity {
                     if (downloadImagesThread != null) {
                         try {
                             downloadImagesThread.join();
+
+
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+
 
                     // Clear images from view
                     rowAdapter.pictures.clear();//clear previous images
@@ -283,7 +294,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                         rowAdapter.count = 0;
                         rowAdapter.picturesSelected.clear();
                     }
-
 
                     // Allow imgUrlThread and downloadImagesThread to execute
                     stopDownload = false;
@@ -308,9 +318,7 @@ public class LoadingImageActivity extends AppCompatActivity {
 
     public void fetchImgSRCs(){
         imgUrlThread = new Thread(() -> {
-
             System.out.println("Starting imgUrlThread");
-            //System.out.println("imgUrlThread name = " + imgUrlThread.getName());
 
             try {
                 int index = 0;
@@ -320,7 +328,7 @@ public class LoadingImageActivity extends AppCompatActivity {
                 // get all <img> tags from http response
                 Elements elements = document.select("img");
                 for (Element element : elements) {
-                    //System.out.println("imgUrlThread interrupted = " + imgUrlThread.isInterrupted());
+
                     if(stopDownload) {
                         System.out.println("Ending imgUrlThread...");
                         return;
@@ -339,9 +347,6 @@ public class LoadingImageActivity extends AppCompatActivity {
                         index++;
                     }
                 }
-
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -353,11 +358,11 @@ public class LoadingImageActivity extends AppCompatActivity {
 
 
 
+
+
     public void downloadImages() {
-        //System.out.println("Executing downloadImages()...");
         ImageDownloader downloader = new ImageDownloader();
         try {
-
             imgUrlThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -370,12 +375,10 @@ public class LoadingImageActivity extends AppCompatActivity {
             public void run() {
 
                 System.out.println("Starting downloadImagesThread");
-                //System.out.println("downloadImagesThread name = " + downloadImagesThread.getName());
 
 
                 // Delete existing images on SD card
                 deleteExistingImgFiles();
-
                 String destFilename;
                 File destFile = null;
                 File dir =getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -384,14 +387,11 @@ public class LoadingImageActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("00");
                 for (String imgURL : imageURLArray) {
 
-                    if(stopDownload) {
-                        System.out.println("Aborting download...");
-                        return;
-                    }
                     destFilename =  "image_" + df.format(counter);
 
 
                     destFile = new File(dir,destFilename);
+
 
 
                     if(downloader.downloadImage(imgURL,destFile))
@@ -400,29 +400,65 @@ public class LoadingImageActivity extends AppCompatActivity {
                         File finalDestFile = destFile;
                         String finalDestFilename = destFilename;
                         int finalCounter = counter;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
 
-                                if(stopDownload) {
-                                    return;
-                                }
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public  void run() {
+
+
+
+                                    if (stopRender) {
+
+
+                                        synchronized (LoadingImageActivity.this) {
+                                            System.out.println("Interrupting myRunnable");
+                                            LoadingImageActivity.this.notify();
+                                        }
+                                        return;
+                                    }
+
+
+                                System.out.println("Rendering " + finalDestFilename);
 
                                 Picture picture = new Picture(BitmapFactory.decodeFile(finalDestFile.getAbsolutePath()), finalDestFile);
                                 onePictureDownloadSuccess(finalCounter,picture);
 
+                                // Wake up download thread after rendering one image
+                                synchronized (LoadingImageActivity.this){
+                                    LoadingImageActivity.this.notify();
+                                }
+
+
                             }
-                        });
+                        };
 
+                        if(stopDownload) {
+                            System.out.println("Aborting download...");
+                            synchronized (LoadingImageActivity.this) {
+                                // Interrupt runnables which are rendering images on UI thread
+                                stopRender = true;
+
+                                // Wake up UI thread
+                                LoadingImageActivity.this.notify();
+                            }
+
+                            // Exits imageDownloadThread
+                            return;
+                        }
+                        synchronized (LoadingImageActivity.this) {
+                            stopRender = false;
+                            runOnUiThread(myRunnable);
+                            try {
+                                // Wait for UI thread to finish executing
+                                LoadingImageActivity.this.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-
                     counter++;
-
                 }
-
-
             }
-
         });
         downloadImagesThread.start();
 
@@ -435,15 +471,12 @@ public class LoadingImageActivity extends AppCompatActivity {
         for(File file : existingFiles) {
             try{
                 if(file.exists()) {
-                    //System.out.print("Deleting file : " + file.getName());
                     boolean result = file.delete();
                     if(result) {
-                        //System.out.println(", successful");
                     }
                 }
             }
             catch (Exception e) {
-                //System.out.println("Error while deleting file");
             }
         }
 
