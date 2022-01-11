@@ -381,11 +381,25 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     private void updateScore(int attempts, String timeTaken) {
-        SharedPreferences pref = getSharedPreferences("Scores", MODE_PRIVATE);
+
+        String scoresFileName = "";
+
+        if (pictures.size() == 6){
+            scoresFileName = "normal";
+        }
+        else if (pictures.size() == 8){
+            scoresFileName = "hard";
+        }
+
+        SharedPreferences pref = getSharedPreferences(scoresFileName, MODE_PRIVATE);
+
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("attemptsNew", attempts);
         editor.putString("timeTakenNew", timeTaken);
         editor.commit();
+
+        SortScore sorter = new SortScore();
+        sorter.updateScoreboard(pref);
     }
 
 }

@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         normalBtn = findViewById(R.id.normalBtn);
                         hardBtn = findViewById(R.id.hardBtn);
                         cancelBtn = findViewById(R.id.cancel_diff);
+                        leaderboardBtn = findViewById(R.id.leaderboardBtn);
 
                         initElements();
                     }
@@ -99,8 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.putExtra("diff", "hard");
             startActivity(intent);
         }
-        if(view == leaderboardBtn) {
+        if (view == leaderboardBtn) {
             Intent intent = new Intent(this, Leaderboard.class);
+            intent.putExtra("diff", "normal");
             startActivity(intent);
         }
 
