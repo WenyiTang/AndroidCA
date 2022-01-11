@@ -10,16 +10,16 @@ public class UserSettings extends Application{
     public static final String PREFERENCES = "preferences";
 
     public static final String SOUND_PREF = "soundPref";
-    public static final float SOUND_ON = 1f;
-    public static final float SOUND_OFF = 0f;
+    public static final String SOUND_ON = "soundOn";
+    public static final String SOUND_OFF = "soundOff";
 
-    private Float soundPref;
+    private String soundPref;
 
-    public Float getSoundPref() {
+    public String getSoundPref() {
         return soundPref;
     }
 
-    public void setSoundPref(Float soundPref) {
+    public void setSoundPref(String soundPref) {
         this.soundPref = soundPref;
     }
 }

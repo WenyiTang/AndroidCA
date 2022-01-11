@@ -26,26 +26,23 @@ public class SettingPage extends AppCompatActivity{
         setContentView(R.layout.activity_setting);
 
         musicSwitch = findViewById(R.id.musicSwitch);
-        musicSwitch.setChecked(true);
+        //musicSwitch.setChecked(true);
 
         settings = (UserSettings) getApplication();
         initSwitchListener();
         loadSharedPreferences();
 
 
-        getMusicVolume(getApplicationContext());
 
     }
 
     private void loadSharedPreferences(){
         SharedPreferences sharedPreferences=getSharedPreferences(UserSettings.PREFERENCES,MODE_PRIVATE);
-        float soundPref=sharedPreferences.getFloat(UserSettings.PREFERENCES,UserSettings.SOUND_ON);
-
-        //if (settings.getSoundPref().equals(UserSettings.SOUND_OFF)){
-        //    soundPref=sharedPreferences.getFloat(UserSettings.PREFERENCES,UserSettings.SOUND_OFF);
-        //}
+        String soundPref=sharedPreferences.getString(UserSettings.PREFERENCES,UserSettings.SOUND_ON);
 
         settings.setSoundPref(soundPref);
+        getMusicVolume(getApplicationContext());
+        updateVolume();
     }
 
 
@@ -54,43 +51,60 @@ public class SettingPage extends AppCompatActivity{
         musicSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
-                //SharedPreferences sharedPref = getSharedPreferences("volume", Context.MODE_PRIVATE);
-                //SharedPreferences.Editor editor =sharedPref.edit();
+                SharedPreferences sharedPref = getSharedPreferences("volume", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor =sharedPref.edit();
 
 
                 if(isChecked){
                     settings.setSoundPref(UserSettings.SOUND_ON);
-                    Toast.makeText(getApplicationContext(), "Switch enabled", Toast.LENGTH_SHORT).show();
-                    //editor.putFloat("volume",1f);
-                    //editor.commit();
+                    Toast.makeText(getApplicationContext(), "Background music switched on", Toast.LENGTH_SHORT).show();
+                    //MusicManager.start(getApplicationContext(),MusicManager.MUSIC_BACKGROUND);
+                    editor.putFloat("volume",1f);
+                    editor.commit();
                 }
                 else{
                     settings.setSoundPref(UserSettings.SOUND_OFF);
-                    Toast.makeText(getApplicationContext(), "Switch disabled", Toast.LENGTH_SHORT).show();
-                    //editor.clear();
-                    //editor.putFloat("volume",0f);
-                    //editor.commit();
+                    Toast.makeText(getApplicationContext(), "Background music switched off", Toast.LENGTH_SHORT).show();
+                    //MusicManager.release();
+                    editor.clear();
+                    editor.putFloat("volume",0f);
+                    editor.commit();
                 }
 
-                SharedPreferences.Editor editor=getSharedPreferences(UserSettings.PREFERENCES,MODE_PRIVATE).edit();
-                editor.putFloat(UserSettings.SOUND_PREF,settings.getSoundPref());
-                editor.commit();
+                //SharedPreferences.Editor editor=getSharedPreferences(UserSettings.PREFERENCES,MODE_PRIVATE).edit();
+                //editor.putString(UserSettings.SOUND_PREF,settings.getSoundPref());
+                //editor.commit();
+
+                updateVolume();
                 getMusicVolume(getApplicationContext());
+
 
             }
         });
     }
 
     public static float getMusicVolume(Context context){
-        //SharedPreferences sharedPref = context.getSharedPreferences("volume", Context.MODE_PRIVATE);
-        //float volume = sharedPref.getFloat("volume",1f);
+        SharedPreferences sharedPref = context.getSharedPreferences("volume", Context.MODE_PRIVATE);
+        float volume = sharedPref.getFloat("volume",1f);
 
-        SharedPreferences sharedPref = context.getSharedPreferences(UserSettings.SOUND_PREF, Context.MODE_PRIVATE);
-        float volume = sharedPref.getFloat(UserSettings.SOUND_PREF,1f);
+        //SharedPreferences sharedPref = context.getSharedPreferences(UserSettings.SOUND_PREF, Context.MODE_PRIVATE);
+        //float volume = sharedPref.getFloat(UserSettings.SOUND_PREF,1f);
 
 
 
         return volume;
+    }
+
+    private void updateVolume(){
+
+        if(settings.getSoundPref().equals(UserSettings.SOUND_ON)){
+            MusicManager.start(getApplicationContext(),MusicManager.MUSIC_BACKGROUND);
+        }
+
+        else{
+            MusicManager.release();
+        }
+
     }
 
 

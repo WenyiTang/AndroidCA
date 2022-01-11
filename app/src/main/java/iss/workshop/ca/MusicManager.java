@@ -64,7 +64,7 @@ public class MusicManager {
                 mp = MediaPlayer.create(context, R.raw.background);
             }
             else if (music == MUSIC_GAMEPLAY){
-                mp = MediaPlayer.create(context, R.raw.background);
+                mp.pause();
             }
             else {
                 Log.e(TAG, "unsupported music number:" + music);
@@ -73,6 +73,7 @@ public class MusicManager {
             players.put(music,mp);
             try{
                 mp.setVolume(SettingPage.getMusicVolume(context),SettingPage.getMusicVolume(context));
+                //mp.setVolume(0.5f,0.5f);
                 mp.setLooping(true);
                 mp.start();
             }
