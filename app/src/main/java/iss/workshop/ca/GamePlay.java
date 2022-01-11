@@ -133,7 +133,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         if (restartBtn != null){
             restartBtn.setOnClickListener(this);
         }
-        
+
         String matchStr = getString(R.string.matches_count, matches, pictures.size());
         matchesCount.setText(matchStr);
 
@@ -258,7 +258,7 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         menuBtn.setVisibility(View.INVISIBLE);
 
         updateScore(triesCount, timeTaken);
-      
+
         TextView congrats = findViewById(R.id.congrats);
         String congratsStr = getString(R.string.congrats, pictures.size(), timeTaken, triesCount);
         congrats.setText(congratsStr);
@@ -370,8 +370,8 @@ public class GamePlay extends AppCompatActivity implements AdapterView.OnItemCli
         SortScore sorter = new SortScore();
         sorter.updateScoreboard(pref);
     }
-
-        SortScore sorter = new SortScore();
-        sorter.updateScoreboard(pref);
-    }
+//
+//        SortScore sorter = new SortScore();
+//        sorter.updateScoreboard(pref);
+//    }
 }

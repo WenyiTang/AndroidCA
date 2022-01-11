@@ -44,11 +44,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class LoadingImageActivity extends AppCompatActivity {
-
-    int[] arr = {R.drawable.afraid,R.drawable.full,R.drawable.hug,R.drawable.laugh,
-            R.drawable.peep,R.drawable.snore,R.drawable.full,R.drawable.hug
-    };
-
+    
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     RowAdapter rowAdapter;
@@ -163,7 +159,6 @@ public class LoadingImageActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         downloading = findViewById(R.id.DownloadText);
         downloaded =findViewById(R.id.Downloaded);
-        mWebView = findViewById(R.id.web_view);
         selectInstruct = findViewById(R.id.selectInstruct);
 
     }
